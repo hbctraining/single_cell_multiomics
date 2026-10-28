@@ -54,5 +54,131 @@
     "title": "Single-cell Multiomics",
     "section": "Downstream analyses",
     "text": "Downstream analyses\nTODO: take figures from each modality to collate into a single figure if possible color them for each modality\ncolorblind friendly: gene = blue protein = orange dna = green\nhttps://www.nature.com/articles/s41576-023-00586-w\n\nNext Lesson &gt;&gt;\nBack to Schedule"
+  },
+  {
+    "objectID": "lessons/02_dataset.html",
+    "href": "lessons/02_dataset.html",
+    "title": "Workshop Dataset",
+    "section": "",
+    "text": "Approximate time: XX minutes"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#learning-objectives",
+    "href": "lessons/02_dataset.html#learning-objectives",
+    "title": "Workshop Dataset",
+    "section": "Learning objectives",
+    "text": "Learning objectives\nIn this lesson, we will:\n\nLearning Objective 1\nLearning Objective 2\nLearning Objective 3"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#overview-of-lesson",
+    "href": "lessons/02_dataset.html#overview-of-lesson",
+    "title": "Workshop Dataset",
+    "section": "Overview of lesson",
+    "text": "Overview of lesson\nWhen doing XYZ…"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#mechanisms-of-hiv-persistence-in-the-gut",
+    "href": "lessons/02_dataset.html#mechanisms-of-hiv-persistence-in-the-gut",
+    "title": "Workshop Dataset",
+    "section": "Mechanisms of HIV persistence in the gut",
+    "text": "Mechanisms of HIV persistence in the gut\nIn 2025, Wei et al. published results that showcased which factors promoted HIV-1 persistence in the gut. This study identified BACH2 as a key factor found in HIV-1 persistent T cells in the gut. They were able to identify this link across the transcriptome, epigenome, and proteome by using the ASAP-seq protocol\n\n\n\n\n\n\nFigure 1: Role of BACH2 in HIV-1 persistent T cells of the gut. Image source: Mimitou et al. (2021)\n\n\n\n\nSubsection 1A\n\n\nSubsection 1B\n\n\n\n\n\n\nExercise 1\n\n\n\n\nA question to evaluate Learning Objective 1\nA followup question to question #1\n…"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#getting-set-up",
+    "href": "lessons/02_dataset.html#getting-set-up",
+    "title": "Workshop Dataset",
+    "section": "Getting set-up",
+    "text": "Getting set-up\nIf you have not already, be sure to download the dataset so that you can access the files used in this analysis. The data can be downloaded from this link\n\nProject organization\nWhen you have large amounts of data, it is easy to lose track of your files and become overwhelmed. We tend to prioritize the analysis and, in the excitement of getting a first look at our data, we often forget to consider how we are going to manage our data and files. This is a common mistake, as data management is often an afterthought when it should be a key part of the workflow from the very beginning. The HMS Data Management Working Group discusses in-depth some aspects to consider beyond the data creation and analysis.\nOne important aspect of data management is organization. For each experiment you work on and analyze data for, it is considered best practice to get organized by creating a planned storage space. We will do that for our analysis.\n\n\n\n\n\n\nNote for Windows OS users\n\n\n\nAfter unzipping, check whether you have a nested sc_multiomics/sc_multiomics folder. If so, move everything from the inner folder up into the outer one, then delete the empty inner folder.\n\n\n\n\nOpening RStudio\nWe can open the R Project up and see that the provided file structure should look like Figure 3.\n\n\n\n\n\n\nFigure 3: Correct setup for RStudio to start the workshop.\n\n\n\nIf your RStudio session looks similar to the image above, then you are ready to start!\n\n\nNew script\nNext, open a new Rscript file and start with some comments to indicate what this file is going to contain. Ideally, we will have one script per major step in our analysis. For this first script, we will be loading our data and performing quality control - as indicated in the header.\nLoading your libraries at the top of the script will also allow you to easily keep track of which libraries you are using and to load them all at once in the beginning.\n\n# Demultiplexing HTO and protein expression ADT\n# Single-cell multiomics modules\n# Author: Harvard Chan Bioinformatics Core\n# Created: October 2026\n\n# Load libraries\nlibrary(tidyverse)\nlibrary(Seurat)\n\nSave the Rscript as 01_demultiplex_hto_and_protein.R in your main folder. Your working directory should look something like this:\n\nTODO"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#topic-3",
+    "href": "lessons/02_dataset.html#topic-3",
+    "title": "Workshop Dataset",
+    "section": "Topic 3",
+    "text": "Topic 3\n\nSubsection 3A\n\n\nSubsection 3B\n\n\n\n\n\n\nExercise 3\n\n\n\n\nA question to evaluate Learning Objective 3\nA followup question to question #1\n…\n\n\n\n\nNext Lesson &gt;&gt;\nBack to Schedule"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#sample-metadata",
+    "href": "lessons/02_dataset.html#sample-metadata",
+    "title": "Workshop Dataset",
+    "section": "Sample metadata",
+    "text": "Sample metadata\nA great way to keep track of your samples is to create a samples table that contains all the relevant metadata. This can include fields such as sex, batch, date sequenced, and more. Collating all this into one spreadsheet will make it easier to match our dataset with the correct experimental conditions.\nInside the data/ folder, we have provided one such metadata file called samples.tsv. This file contains information about each sample in our dataset. We will first load this in to familiarize ourselves with the data we will be using in the next step.\n\n# Load sample metadata\ndf_meta &lt;- read_tsv(\"data/samples.tsv\")\ndf_meta\n\n\n\n\n\nTable 2: Metadata for each of the samples in this gut HIV dataset.\n\n\n\n\n\n\nlibrary\ngeo_title\nhiv_status\npatient\n\n\n\n\nB351A\nHD351_A_whole\nHIV_neg\n351\n\n\nB351B\nHD351_B_whole\nHIV_neg\n351\n\n\nB351C\nHD351_C_whole\nHIV_neg\n351\n\n\nB357A\nHD357_A_whole\nHIV_neg\n357\n\n\nB357B\nHD357_B_whole\nHIV_neg\n357\n\n\nB357C\nHD357_C_whole\nHIV_neg\n357\n\n\nB360A\nHD360_A_whole\nHIV_neg\n360\n\n\nB360B\nHD360_B_whole\nHIV_neg\n360\n\n\nB360C\nHD360_C_whole\nHIV_neg\n360\n\n\nB363A\nHD363_A_whole\nHIV_neg\n363\n\n\nB363B\nHD363_B_whole\nHIV_neg\n363\n\n\nB363C\nHD363_C_whole\nHIV_neg\n363\n\n\nPT1\n035_037_040_pooled_whole\nPLWH\npooled\n\n\nPT2\n008_012_015_pooled_whole\nPLWH\npooled\n\n\nPT3\n017_023_027_029_pooled_whole\nPLWH\npooled\n\n\nPT4\n361_pooled_whole\nHIV_neg\n361\n\n\n\n\n\n\n\n\nThis table is valuable because it gives us some key information about each sample. For example, we can see that we have multiple sequencing runs from the same patient for many of the HIV negative samples. More consequentially, in the patient column, we see the label pooled for all of the HIV positive samples.\nRecall earlier that we discussed that some samples were first tagged with an antibody and then pooled into a singular run. This is a common cost-saving technique used to sequence multiple samples at once. However, in doing so, we must computationally determine which cell comes from which sample by using those hash sequences. This process is called demultiplexing which we will discuss more deeply in the next lesson.\n\nNext Lesson &gt;&gt;\nBack to Schedule"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#mechanisms-of-hiv-1-persistence-in-the-gut",
+    "href": "lessons/02_dataset.html#mechanisms-of-hiv-1-persistence-in-the-gut",
+    "title": "Workshop Dataset",
+    "section": "Mechanisms of HIV-1 persistence in the gut",
+    "text": "Mechanisms of HIV-1 persistence in the gut\nThroughout this workshop, we will be utilizing a dataset from Wei et al. (2025). In this experiment, they ran DOGMA-seq on gut tissue from healthy samples and people living with HIV (PLWH) being treated with antiretroviral therapy (ART). As a result, they were able to characterize the transcriptome, epigenome, and proteome of HIV-1 infected cells in contrast to healthy cells.\nAs a dataset that makes use of hashing (pooled samples), RNA, ATAC, and protein expression, this provides a great learning opportunity to experience how to process each of these modalities (Table 1).\n\n\n\nTable 1: Modalities measured in the DOGMA-seq dataset.\n\n\n\n\n\n\n\n\n\n\nModality\nMeasures\nUsed for\n\n\n\n\nHashtag oligos (HTO)\nSample of origin\nDemultiplexing pooled samples, doublet removal\n\n\nRNA\nGene expression\nClustering, marker genes, cell type annotation\n\n\nATAC\nChromatin accessibility\nEpigenomic profiles, transcription factor motifs\n\n\nAntibody-derived tags (ADT)\nSurface protein abundance\nValidating cell types, protein markers\n\n\n\n\n\n\n\nKey findings\nIn 2025, Wei et al. published results that showcased which factors promoted HIV-1 persistence in the gut. This study identified BACH2 as a key factor found in HIV-1 persistent T cells in the gut. The authors were able to identify this link across the transcriptome, epigenome, and proteome by using the DOGMA-seq protocol (Figure 1).\n\n\n\n\n\n\nFigure 1: Role of BACH2 in HIV-1 persistent T cells of the gut. Image source: Wei et al. (2025)\n\n\n\nTODO flush out this section\n\n\nSamples\nThis dataset includes 17,642 cells in PLWH and 22,422 cells in HIV− individuals. Each PLWH donor was tagged with oligo-barcoded antibodies, pooled, and then sequenced. From all of these cells, the authors were able to identify 16 distinct cell types in the dataset (Figure 2).\n\n\n\n\n\n\nFigure 2: UMAP of cell types identified in the samples collected. Image source: Wei et al. (2025)\n\n\n\nTo start, we will be using this heterogeneous population of cells to showcase how multiomics datasets are processed. We will first begin with the antibody hashes and protein expression before moving on to the ATAC-seq material.\n\n\n\n\n\n\nscRNA-seq\n\n\n\nNote that we will not discuss the upstream methods used to process scRNA-seq as we have a separate workshop that details those steps in much more depth.\n\n\nLastly, we will pull all three molecular modalities together to run further downstream analyses."
+  },
+  {
+    "objectID": "lessons/02_dataset.html#biological-results",
+    "href": "lessons/02_dataset.html#biological-results",
+    "title": "Workshop Dataset",
+    "section": "Biological results",
+    "text": "Biological results\nIn 2025, Wei et al. published results that showcased which factors promoted HIV-1 persistence in the gut. This study identified BACH2 as a key factor found in HIV-1 persistent T cells in the gut. They were able to identify this link across the transcriptome, epigenome, and proteome by using the ASAP-seq protocol\n\n\n\n\n\n\nFigure 1: Role of BACH2 in HIV-1 persistent T cells of the gut. Image source: Wei et al. (2025)"
+  },
+  {
+    "objectID": "lessons/02_dataset.html#samples",
+    "href": "lessons/02_dataset.html#samples",
+    "title": "Workshop Dataset",
+    "section": "Samples",
+    "text": "Samples\nOne set of samples that were s\n\n\n\n\n\n\nFigure 2: UMAP of cell types identified in the samples collected. Image source: Wei et al. (2025)"
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html",
+    "href": "lessons/03_demultiplexing.html",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "",
+    "text": "Approximate time: XX minutes"
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#learning-objectives",
+    "href": "lessons/03_demultiplexing.html#learning-objectives",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Learning objectives",
+    "text": "Learning objectives\nIn this lesson, we will:\n\nLearning Objective 1\nLearning Objective 2\nLearning Objective 3"
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#overview-of-lesson",
+    "href": "lessons/03_demultiplexing.html#overview-of-lesson",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Overview of lesson",
+    "text": "Overview of lesson\nWhen doing XYZ…"
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#loading-the-dataset-into-seurat",
+    "href": "lessons/03_demultiplexing.html#loading-the-dataset-into-seurat",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Loading the dataset into Seurat",
+    "text": "Loading the dataset into Seurat\nThese samples were processed with 10X kits and were therefore processed with their propietary software. Here, we make use of two pipelines cellranger-arc and cellranger multi where the first processes RNA + ATAC and multi takes case of RNA + ADT.\nTODO\nTherefore, we will have two folders of results that we will eventually merged together into one singular Seurat object.\nWe will be starting with the ADT protein and RNA expression data for sample PT1.\n\n# Sample of interest\nsample &lt;- \"PT1\"\n\n\nLoad counts matrix\nFirst we will load in the counts matrices from the ADT folder with the Read10X() function. When we investigate the two matrices stored, we can see that we have both the “Gene Expression” (RNA) and “Antibody Capture” (ADT) matrices.\n\n# Load raw counts data\ncounts &lt;- Read10X(file.path(\"data\", sample, \"ADT\"))\nnames(counts)\n\n[1] \"Gene Expression\"  \"Antibody Capture\"\n\n\nSeurat allows you to have Assays() where we can store different matrices for the same cells within a single object. To initialize our Seurat object, let us first use the CreateSeuratObject() function for the RNA expression. Note that we set assay = \"RNA\", which means that we can use the key “RNA” any time we want to look at the RNA expression over the protein or ATAC values.\n\n# RNA expression matrix\ncounts_gex &lt;- counts[[\"Gene Expression\"]]\n\n# Create seurat object\nseurat &lt;- CreateSeuratObject(\n  counts = counts_gex,\n  assay = \"RNA\",\n  project = sample)\n\nseurat\n\nAn object of class Seurat \n36601 features across 726385 samples within 1 assay \nActive assay: RNA (36601 features, 0 variable features)\n 1 layer present: counts\n\n\nNow we can see that we have created a Seurat object with 726385 cells and 36601 genes within the assay RNA.\n\n\nHashtags\n\n# Protein expression matrix (ADT and HTO)\ncounts_adt &lt;- counts[[\"Antibody Capture\"]]\n\nWe can take a look at all the proteins included in our experiment by looking at the rownames of our counts matrix. In particular we are looking for any “protein” that begins with hashtag. Some runs are comprised of multiple, pooled samples. The way to identify which sample a cell comes from is to use these sequences to demultiplex. The first thing we are going to do here is pull out those antibodies and match them.\n\n# Map of hash to patient\ndf_hash &lt;- read.csv(file.path(\"data\",\n                              sample,\n                              \"ADT\", \"hashing_info.txt.gz\"),\n                    header = FALSE, sep = \":\",\n                    col.names = c(\"hash\", \"patient\")) %&gt;%\n  # data wrangling\n  mutate(hash = str_replace(hash, \"H\", \"h\"),\n         hash = str_replace(hash, \" \", \"\"))\ndf_hash\n\n\n\n\n\nTable 1: Table of hashing information for each patient.\n\n\n\n\n\n\nhash\npatient\n\n\n\n\nhashtag1\n35\n\n\nhashtag2\n37\n\n\nhashtag3\n40\n\n\n\n\n\n\n\n\nThe rownames of the matrix are the names of proteins and hashes, which we can see by looking at the first few proteins in the array:\n\n# View first few protein names\nrownames(counts_adt) %&gt;% head()\n\n[1] \"GPR56_TotalA\"              \"ArmenianHamsterIgG_TotalA\"\n[3] \"CD13_TotalA\"               \"CD57_Recombinant_TotalA\"  \n[5] \"CD272_TotalA\"              \"CD88_TotalA\"              \n\n\nAll the proteins have the string _TotalA appended, so we are going to remove it for easy searching now and in the future. Once we accomplish that, we can search for the hashes in the array by searching for the string hashtag.\n\n# Remove appended _TotalA string from protein names\nrownames(counts_adt) &lt;- str_replace_all(rownames(counts_adt), \"_TotalA\", \"\")\n\n# Looking for hashes in the dataset\nhashes &lt;- rownames(counts_adt)[str_detect(rownames(counts_adt), \"hashtag\")]\nhashes\n\n[1] \"hashtag1\" \"hashtag2\" \"hashtag3\" \"hashtag4\" \"hashtag5\" \"hashtag6\" \"hashtag7\"\n[8] \"hashtag8\"\n\n\n\n\n\n\n\n\nMore hashes than in dataframe\n\n\n\nTODO\nIn the metadata, we see that there should only be 3 hashes, but we have 8 in our matrix. This is because the sequence for multiple hashes was included in the reference and does not effect the future results.\n\n\nNow that we have the names for each hash, we can pull those antibody captures out and store it as HTO in our Seurat object with the CreateAssayObject() function.\n\n# Grab counts for just the hashes\ncounts_hash &lt;- counts_adt[hashes, ]\n\n# Add HTO assay to our seurat object\nseurat[[\"HTO\"]] &lt;- CreateAssayObject(counts = counts_hash)\nseurat\n\nAn object of class Seurat \n36609 features across 726385 samples within 2 assays \nActive assay: RNA (36601 features, 0 variable features)\n 1 layer present: counts\n 1 other assay present: HTO\n\n\nTo confirm that we added the HTO assay succesfully, we can check that the are 8 Features() in the assay - which should correspond to each of the hashes.\n\n# Name of features in the HTO assay\nFeatures(seurat[[\"HTO\"]])\n\n[1] \"hashtag1\" \"hashtag2\" \"hashtag3\" \"hashtag4\" \"hashtag5\" \"hashtag6\" \"hashtag7\"\n[8] \"hashtag8\""
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#topic-2",
+    "href": "lessons/03_demultiplexing.html#topic-2",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Topic 2",
+    "text": "Topic 2\n\nSubsection 2A\n\n\nSubsection 2B\n\n\n\n\n\n\nExercise 2\n\n\n\n\nA question to evaluate Learning Objective 2\nA followup question to question #1\n…"
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#topic-3",
+    "href": "lessons/03_demultiplexing.html#topic-3",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Topic 3",
+    "text": "Topic 3\n\nSubsection 3A\n\n\nSubsection 3B\n\n\n\n\n\n\nExercise 3\n\n\n\n\nA question to evaluate Learning Objective 3\nA followup question to question #1\n…\n\n\n\n\nNext Lesson &gt;&gt;\nBack to Schedule"
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#protein-expression",
+    "href": "lessons/03_demultiplexing.html#protein-expression",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Protein expression",
+    "text": "Protein expression\nNow that we have identified the hashes, we can proceed by adding the protein expression to our Seurat object.\n\n# Protein expression\ncounts_protein &lt;- counts_adt[!rownames(counts_adt) %in% hashes, ]\nseurat[[\"ADT\"]] &lt;- CreateAssayObject(counts = counts_protein)\n\nseurat\n\nAn object of class Seurat \n36774 features across 726385 samples within 3 assays \nActive assay: RNA (36601 features, 0 variable features)\n 1 layer present: counts\n 2 other assays present: HTO, ADT\n\n\nSo now we have the RNA, HTO, and ADT assays in our Seurat object. We could also add the ATAC assay, however we will focus on the steps to do so in a future lesson.\nTherefore, we can move forward with the next step of demultiplexing."
+  },
+  {
+    "objectID": "lessons/03_demultiplexing.html#demultiplexing",
+    "href": "lessons/03_demultiplexing.html#demultiplexing",
+    "title": "Loading the Data and Demultiplexing",
+    "section": "Demultiplexing",
+    "text": "Demultiplexing\nIn this step we will use the counts for each hashtag in the dataset to map each cell to the patient it belongs to.\n\n# Set default assay to HTO\nDefaultAssay(seurat) &lt;- \"HTO\"\n\nTODO By default we have several metrics computed\n\n# Seurat metadata\nseurat@meta.data %&gt;% head()\n\n\n\n\n\nTable 2: Metadata generated by default after adding Assays()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\norig.ident\nnCount_RNA\nnFeature_RNA\nnCount_HTO\nnFeature_HTO\nnCount_ADT\nnFeature_ADT\n\n\n\n\nAAACAGCCAAACAACA-1\nPT1\n30\n29\n0\n0\n0\n0\n\n\nAAACAGCCAAACATAG-1\nPT1\n2\n2\n1\n1\n1\n1\n\n\nAAACAGCCAAACCCTA-1\nPT1\n9\n8\n0\n0\n0\n0\n\n\nAAACAGCCAAACCTAT-1\nPT1\n4\n3\n0\n0\n0\n0\n\n\nAAACAGCCAAACCTTG-1\nPT1\n8\n7\n0\n0\n0\n0\n\n\nAAACAGCCAAACGCGA-1\nPT1\n186\n169\n0\n0\n0\n0\n\n\n\n\n\n\n\n\n\nFiltration\nAt this point it is quite evident that we have a lot of low quality cells or empty droplets. So to begin\nFirst, we can take a look at the number of total counts associated with each cell to remove cells that have too few counts for the antibody to cleanly assign a sample identity.\n\nggplot(seurat@meta.data) +\n  geom_histogram(aes(x = nCount_HTO),\n                 fill = \"lightblue\",\n                 bins = 100) +\n  scale_y_log10() +\n  scale_x_log10() +\n  theme_bw() + NoLegend() +\n  geom_vline(xintercept = 11)\n\n\n\n\n\n\n\n\nThe black line is drawn at nCount_HTO = 11 to show the threshold we will be using to remove empty droplets. We will additionally remove cells that contain zero RNA expression\n\n# Filter based on HTO counts\nseurat &lt;- subset(seurat, nCount_HTO &gt; 11)\nseurat &lt;- subset(seurat, nCount_RNA &gt; 0)\nseurat\n\nAn object of class Seurat \n36774 features across 38726 samples within 3 assays \nActive assay: HTO (8 features, 0 variable features)\n 2 layers present: counts, data\n 2 other assays present: RNA, ADT\n\n\n\n\nNormalization\nNormalizeData(): Normalize antibody counts with normalization.method = \"CLR\" (Centered Log-Ratio) and margin = 2 (each cell is normalized across its hashtags).\nTODO describe this method in more depth\n\n# CLR HTO normalization\nseurat &lt;- NormalizeData(\n    seurat,\n    assay = \"HTO\",\n    normalization.method = \"CLR\",\n    margin = 2\n  )\n\nseurat\n\nAn object of class Seurat \n36774 features across 38726 samples within 3 assays \nActive assay: HTO (8 features, 0 variable features)\n 2 layers present: counts, data\n 2 other assays present: RNA, ADT\n\n\nWith these normalized counts, we can start to see if we can clearly identify cells that have high expression of a singular hash. These are the cells that will be mapped to their corresponding\n\nRidgePlot(\n  seurat,\n  hashes,\n  assay = \"HTO\",\n  same.y.lims = TRUE)\n\n\n\n\n\n\n\nFigure 1: Ridge plot of HTO normalized expression for each hash.\n\n\n\n\n\n\n\nSubsection 3B\n\n\n\n\n\n\nExercise 3\n\n\n\n\nA question to evaluate Learning Objective 3\nA followup question to question #1\n…\n\n\n\n\nNext Lesson &gt;&gt;\nBack to Schedule"
   }
 ]

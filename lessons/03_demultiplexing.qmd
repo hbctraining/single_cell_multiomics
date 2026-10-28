@@ -1,0 +1,311 @@
+---
+title: "Loading the Data and Demultiplexing"
+description: |
+  Write a description of the lesson here. 
+author:
+  - Noor Sohail
+  - author_2
+date: "2026-10-27"
+categories: 
+  - category_1
+  - category_2
+  - category_3
+  - category_4
+keywords:
+  - keyword_1
+  - keyword_2
+  - keyword_3
+  - keyword_4
+  - keyword_5
+  - keyword_6
+license: "CC-BY-4.0"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: load_libraries_data
+#| echo: false
+# Load libraries and data
+library(tidyverse)
+library(Seurat)
+
+# Set seed
+set.seed(123456789L)
+
+# Load sample metadata
+df_meta <- read_tsv("data/samples.tsv")
+
+# Turn off scientific notation
+options(scipen = 999)
+```
+
+Approximate time: XX minutes
+
+## Learning objectives 
+
+In this lesson, we will:
+
+- Learning Objective 1
+- Learning Objective 2
+- Learning Objective 3
+
+## Overview of lesson
+
+When doing XYZ...
+
+## Loading the dataset into Seurat
+
+These samples were processed with 10X kits and were therefore processed with their propietary software. Here, we make use of two pipelines `cellranger-arc` and `cellranger multi` where the first processes RNA + ATAC and multi takes case of RNA + ADT.
+
+TODO
+
+Therefore, we will have two folders of results that we will eventually merged together into one singular Seurat object. 
+
+**We will be starting with the ADT protein and RNA expression data for sample `PT1`.**
+
+```{r}
+#| label: assign_sample
+# Sample of interest
+sample <- "PT1"
+```
+
+### Load counts matrix
+
+First we will load in the counts matrices from the `ADT` folder with the `Read10X()` function. When we investigate the two matrices stored, we can see that we have both the "Gene Expression" (RNA) and "Antibody Capture" (ADT) matrices. 
+
+```{r}
+#| label: load_counts
+# Load raw counts data
+counts <- Read10X(file.path("data", sample, "ADT"))
+names(counts)
+```
+
+Seurat allows you to have `Assays()` where we can store different matrices for the same cells within a single object. To initialize our Seurat object, let us first use the `CreateSeuratObject()` function for the RNA expression. Note that we set `assay = "RNA"`, which means that we can use the key "RNA" any time we want to look at the RNA expression over the protein or ATAC values.
+
+```{r}
+#| label: intialize_seurat
+# RNA expression matrix
+counts_gex <- counts[["Gene Expression"]]
+
+# Create seurat object
+seurat <- CreateSeuratObject(
+  counts = counts_gex,
+  assay = "RNA",
+  project = sample)
+
+seurat
+```
+
+Now we can see that we have created a Seurat object with `r ncol(seurat)` cells and `r nrow(seurat)` genes within the assay `RNA`.
+
+### Hashtags
+
+```{r}
+#| label: adt_counts
+# Protein expression matrix (ADT and HTO)
+counts_adt <- counts[["Antibody Capture"]]
+```
+
+We can take a look at all the proteins included in our experiment by looking at the rownames of our counts matrix. In particular we are looking for any "protein" that begins with `hashtag`. Some runs are comprised of multiple, pooled samples. The way to identify which sample a cell comes from is to use these sequences to **demultiplex**. The first thing we are going to do here is pull out those antibodies and match them.
+
+```{r}
+#| label: hash_metadata
+#| eval: false
+# Map of hash to patient
+df_hash <- read.csv(file.path("data",
+                              sample,
+                              "ADT", "hashing_info.txt.gz"),
+                    header = FALSE, sep = ":",
+                    col.names = c("hash", "patient")) %>%
+  # data wrangling
+  mutate(hash = str_replace(hash, "H", "h"),
+         hash = str_replace(hash, " ", ""))
+df_hash
+```
+
+```{r}
+#| label: tbl-hash_metadata
+#| tbl-cap: Table of hashing information for each patient.
+#| echo: false
+# Map of hash to patient
+df_hash <- read.csv(file.path("data",
+                              sample,
+                              "ADT", "hashing_info.txt.gz"),
+                    header = FALSE, sep = ":",
+                    col.names = c("hash", "patient")) %>%
+  # data wrangling
+  mutate(hash = str_replace(hash, "H", "h"),
+         hash = str_replace(hash, " ", ""))
+
+df_hash %>% knitr::kable()
+```
+
+The rownames of the matrix are the names of proteins and hashes, which we can see by looking at the first few proteins in the array:
+
+```{r}
+#| label: protein_names
+# View first few protein names
+rownames(counts_adt) %>% head()
+```
+
+All the proteins have the string `_TotalA` appended, so we are going to remove it for easy searching now and in the future. Once we accomplish that, we can search for the hashes in the array by searching for the string `hashtag`. 
+
+```{r}
+#| label: hashtag_search
+# Remove appended _TotalA string from protein names
+rownames(counts_adt) <- str_replace_all(rownames(counts_adt), "_TotalA", "")
+
+# Looking for hashes in the dataset
+hashes <- rownames(counts_adt)[str_detect(rownames(counts_adt), "hashtag")]
+hashes
+```
+
+::: callout-note
+# More hashes than in dataframe
+
+TODO
+
+In the metadata, we see that there should only be 3 hashes, but we have 8 in our matrix. This is because the sequence for multiple hashes was included in the reference and does not effect the future results.
+:::
+
+Now that we have the names for each hash, we can pull those antibody captures out and store it as `HTO` in our Seurat object with the `CreateAssayObject()` function.
+
+```{r}
+#| label: hto_assay
+# Grab counts for just the hashes
+counts_hash <- counts_adt[hashes, ]
+
+# Add HTO assay to our seurat object
+seurat[["HTO"]] <- CreateAssayObject(counts = counts_hash)
+seurat
+```
+
+To confirm that we added the `HTO` assay succesfully, we can check that the are 8 `Features()` in the assay - which should correspond to each of the hashes.
+
+```{r}
+#| label: hto_features
+# Name of features in the HTO assay
+Features(seurat[["HTO"]])
+```
+
+## Protein expression
+
+Now that we have identified the hashes, we can proceed by adding the protein expression to our Seurat object. 
+
+```{r}
+#| label: counts_protein
+# Protein expression
+counts_protein <- counts_adt[!rownames(counts_adt) %in% hashes, ]
+seurat[["ADT"]] <- CreateAssayObject(counts = counts_protein)
+
+seurat
+```
+
+So now we have the RNA, HTO, and ADT assays in our Seurat object. We could also add the ATAC assay, however we will focus on the steps to do so in a future lesson.
+
+Therefore, we can move forward with the next step of demultiplexing.
+
+## Demultiplexing
+
+In this step we will use the counts for each hashtag in the dataset to map each cell to the patient it belongs to.
+
+```{r}
+#| label: set_DefaultAssay
+# Set default assay to HTO
+DefaultAssay(seurat) <- "HTO"
+```
+
+TODO By default we have several metrics computed
+
+```{r}
+#| label: default_meta
+#| eval: false
+# Seurat metadata
+seurat@meta.data %>% head()
+```
+
+```{r}
+#| label: tbl-default_meta
+#| tbl-cap: Metadata generated by default after adding `Assays()`
+#| echo: false
+# Seurat metadata
+seurat@meta.data %>% head() %>% knitr::kable()
+```
+
+### Filtration
+
+At this point it is quite evident that we have a lot of low quality cells or empty droplets. So to begin
+
+First, we can take a look at the number of total counts associated with each cell to remove cells that have too few counts for the antibody to cleanly assign a sample identity. 
+
+```{r}
+#| label: nCount_HTO
+#| fig-width: 9
+ggplot(seurat@meta.data) +
+  geom_histogram(aes(x = nCount_HTO),
+                 fill = "lightblue",
+                 bins = 100) +
+  scale_y_log10() +
+  scale_x_log10() +
+  theme_bw() + NoLegend() +
+  geom_vline(xintercept = 11)
+```
+
+The black line is drawn at `nCount_HTO = 11` to show the threshold we will be using to remove empty droplets. We will additionally remove cells that contain zero RNA expression
+
+```{r}
+#| label: filter
+# Filter based on HTO counts
+seurat <- subset(seurat, nCount_HTO > 11)
+seurat <- subset(seurat, nCount_RNA > 0)
+seurat
+```
+
+### Normalization
+
+`NormalizeData()`: Normalize antibody counts with `normalization.method = "CLR"` (Centered Log-Ratio) and `margin = 2` (each cell is normalized across its hashtags).
+
+TODO describe this method in more depth
+
+```{r}
+#| label: hto_norm
+# CLR HTO normalization
+seurat <- NormalizeData(
+    seurat,
+    assay = "HTO",
+    normalization.method = "CLR",
+    margin = 2
+  )
+
+seurat
+```
+
+With these normalized counts, we can start to see if we can clearly identify cells that have high expression of a singular hash. These are the cells that will be mapped to their corresponding 
+
+```{r}
+#| label: fig-hto_ridge
+#| fig-cap: Ridge plot of HTO normalized expression for each hash.
+#| fig-width: 9
+RidgePlot(
+  seurat,
+  hashes,
+  assay = "HTO",
+  same.y.lims = TRUE)
+```
+
+### Subsection 3B
+
+:::{.callout-tip}
+# [**Exercise 3**](tmp-Answer_key.qmd#exercise-3)
+1. A question to evaluate Learning Objective 3
+2. A followup question to question #1
+3. ...
+:::
+
+***
+
+[Next Lesson >>](tmp.qmd)
+
+[Back to Schedule](../schedule/schedule.qmd)
