@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "lessons/01_intro_multiomics.html",
+    "href": "lessons/01_intro_multiomics.html",
+    "title": "Single-cell Multiomics",
+    "section": "",
+    "text": "Approximate time: XX minutes"
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#learning-objectives",
+    "href": "lessons/01_intro_multiomics.html#learning-objectives",
+    "title": "Single-cell Multiomics",
+    "section": "Learning objectives",
+    "text": "Learning objectives\nIn this lesson, we will:\n\nDiscuss the pros and cons of different single-cell modalities\nDescribe the overaching experimenal concept\nList common analyses that can be accomplished with multiomics"
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#overview-of-lesson",
+    "href": "lessons/01_intro_multiomics.html#overview-of-lesson",
+    "title": "Single-cell Multiomics",
+    "section": "Overview of lesson",
+    "text": "Overview of lesson\nBefore designing an experiment and collecting samples, it is important to determine which assays will be most beneficial to answering your biological question. Here, we introduce the concept of single-cell multiomics which allows you capture multiple pieces of information (RNA, ATAC, protein expression) within a singular cell. Each modality comes with its own advantages and disadvantages that will determine which analyses you can perform with your data."
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#what-is-single-cell-multiomics",
+    "href": "lessons/01_intro_multiomics.html#what-is-single-cell-multiomics",
+    "title": "Single-cell Multiomics",
+    "section": "What is single-cell multiomics?",
+    "text": "What is single-cell multiomics?\nThe field of single-cell sequencing has evolved beyond its intial focus on gene expression (RNA) capture. Additional methods have been developed to capture additional information for each cell, including the epigenome (chromatin accessibility), proteome, and more. Experiments that contain more than one modality is what is typically referred to a multiomics experiment.\nTwo of the most popular protocols that captures all three RNA, ATAC, and protein are ASAP-seq and TEA-seq. This then begs the question, when is it appropriate to use which modality? Kim et. al (2024) summarized the main principles and use cases for each modality. Here, we summarize the key points to serve as a reference for which modality best suits the experimental question or design that you may be using.\n\n\n\nTable 1: Summary of common single-cell modalities.\n\n\n\n\n\n\n\n\n\n\n\n\nscRNA-seq\nscATAC-seq\nADT (surface protein)\n\n\n\n\nCoverage\nRNA abundance and splicing events\nDNA chromatin accessibility and epigenetic regulation\nSurface protein expression\n\n\nAdvantages\n• Method of choice for transcriptional heterogeneity• Captures cell-to-cell expression variability\n• Short sample prep time and works with few cells• Accessible and cost-effective\n• Protein expression is not sparse• Insight into cell communication and signaling• Paired with RNA, better resolves cellular heterogeneity\n\n\nLimitations\n• Low capture efficiency and high dropout making data noisy, sparse, and variable• Incomplete genome coverage, especially in rare cell populations\n• Non-specific antibody binding (background counts)• Composition bias from uneven capture efficiency\n• Requires known antibodies (challening for non-model)\n\n\nApplications\n• Cell type identification• Cell subpopulation discovery• Gene expression dynamics• Cellular heterogeneity\n• Cis/trans regulatory element analysis• Gene regulatory dynamics• Transcription factor activity• Epigenetic changes• Motif analsis\n• Gene–protein correlation• Cell signaling pathways• Cell states and cell types"
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#topic-2",
+    "href": "lessons/01_intro_multiomics.html#topic-2",
+    "title": "Single-cell Multiomics",
+    "section": "Topic 2",
+    "text": "Topic 2\n\nSubsection 2A\n\n\nSubsection 2B\n\n\n\n\n\n\nExercise 2\n\n\n\n\nA question to evaluate Learning Objective 2\nA followup question to question #1\n…"
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#topic-3",
+    "href": "lessons/01_intro_multiomics.html#topic-3",
+    "title": "Single-cell Multiomics",
+    "section": "Topic 3",
+    "text": "Topic 3\n\nSubsection 3A\n\n\nSubsection 3B\n\n\n\n\n\n\nExercise 3\n\n\n\n\nA question to evaluate Learning Objective 3\nA followup question to question #1\n…\n\n\n\n\nNext Lesson &gt;&gt;\nBack to Schedule"
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#how-modalities-are-captured",
+    "href": "lessons/01_intro_multiomics.html#how-modalities-are-captured",
+    "title": "Single-cell Multiomics",
+    "section": "How modalities are captured",
+    "text": "How modalities are captured\n\n\n\n\n\n\nFigure 1: Schematic how the ASAP-seq protocol captures single-cell RNA, ATAC, and protein expression. Image source: Mimitou et al. (2021)\n\n\n\nTODO: talk to mandovi"
+  },
+  {
+    "objectID": "lessons/01_intro_multiomics.html#downstream-analyses",
+    "href": "lessons/01_intro_multiomics.html#downstream-analyses",
+    "title": "Single-cell Multiomics",
+    "section": "Downstream analyses",
+    "text": "Downstream analyses\nTODO: take figures from each modality to collate into a single figure if possible color them for each modality\ncolorblind friendly: gene = blue protein = orange dna = green\nhttps://www.nature.com/articles/s41576-023-00586-w\n\nNext Lesson &gt;&gt;\nBack to Schedule"
+  }
+]
