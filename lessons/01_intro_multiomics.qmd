@@ -57,7 +57,7 @@ Table: Summary of common single-cell modalities. {#tbl-modality_contrast}
 
 ## How modalities are captured
 
-::: {#fig-visium_hd_bins .figure}
+::: {#fig-asap_seq .figure}
 ![](../img/01_asap_seq.png){width=900}
 
 Schematic how the ASAP-seq protocol captures single-cell RNA, ATAC, and protein expression.<br>
