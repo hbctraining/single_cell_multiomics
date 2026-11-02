@@ -1,22 +1,26 @@
 ---
 title: "Generating Pooled Seurat Object"
 description: |
-  Write a description of the lesson here. 
+  Shows how the full DOGMA-seq gut dataset was assembled by looping over every library to create a Seurat object with RNA, HTO, and ADT assays, demultiplexing the pooled samples along the way. Merges the libraries, filters cells by mitochondrial content, and runs the standard RNA workflow of normalization, PCA, Harmony integration, UMAP, and clustering.
 author:
   - Noor Sohail
 date: "2026-10-31"
 categories: 
-  - category_1
-  - category_2
-  - category_3
-  - category_4
+  - Data processing
+  - Seurat
+  - Demultiplexing
+  - Integration
 keywords:
-  - keyword_1
-  - keyword_2
-  - keyword_3
-  - keyword_4
-  - keyword_5
-  - keyword_6
+  - merge Seurat objects
+  - for loop Seurat multiple samples
+  - Read10X multiple samples
+  - cellranger-arc per_barcode_metrics
+  - HTODemux pooled samples
+  - Seurat JoinLayers
+  - mitochondrial ratio filtering
+  - Harmony integration Seurat
+  - scRNA-seq clustering workflow
+  - DOGMA-seq Seurat processing
 license: "CC-BY-4.0"
 editor_options: 
   markdown: 
@@ -35,9 +39,9 @@ Approximate time: XX minutes
 
 In this lesson, we will:
 
-- Learning Objective 1
-- Learning Objective 2
-- Learning Objective 3
+- Automate loading and demultiplexing many samples with a `for` loop
+- Merge per-sample Seurat objects and filter cells on mitochondrial content
+- Process the RNA assay with normalization, PCA, Harmony, UMAP, and clustering
 
 ## Overview of lesson
 

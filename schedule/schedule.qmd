@@ -9,10 +9,11 @@ toc: false
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|
-| 9:30 - 9:55 | [Introduction to Single-cell Multiomics](../lessons/01_intro_multiomics.qmd) | Noor |
-| 9:55 - 10:30 | [Workshop Dataset](../lessons/02_dataset.qmd) | Noor |
-| 10:30 - 10:40 | Break | |
-| 10:40 - 11:50 | [Loading the Data and Demultiplexing](../lessons/03_demultiplexing.qmd) | Noor |
+| 9:30 - 9:45 | [Introduction to Single-cell Multiomics](../lessons/01_intro_multiomics.qmd) | Noor |
+| 9:45 - 10:05 | [Workshop Dataset](../lessons/02_dataset.qmd) | Noor |
+| 10:05 - 11:05 | [Loading the Data and Demultiplexing](../lessons/03_demultiplexing.qmd) | Noor |
+| 11:05 - 11:10 | Break | |
+| 11:10 - 12:30 | [Protein Expression](../lessons/04_protein.qmd) | Noor |
 
 
 

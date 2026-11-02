@@ -1,22 +1,26 @@
 ---
 title: "Workshop Dataset"
 description: |
-  Write a description of the lesson here. 
+  Introduces the DOGMA-seq dataset from Wei et al. (2025), which profiles RNA, chromatin accessibility, and surface protein in gut tissue from people living with HIV and HIV-negative donors. Sets up the R project and analysis script, then explores the sample metadata to see why pooled, hashed samples need to be demultiplexed.
 author:
   - Noor Sohail
 date: "2026-10-27"
 categories: 
-  - category_1
-  - category_2
-  - category_3
-  - category_4
+  - Workshop dataset
+  - Experimental design
+  - Project setup
+  - R
 keywords:
-  - keyword_1
-  - keyword_2
-  - keyword_3
-  - keyword_4
-  - keyword_5
-  - keyword_6
+  - DOGMA-seq
+  - DOGMA-seq dataset
+  - HIV-1 persistence gut
+  - BACH2 HIV
+  - single-cell multiomics dataset
+  - cell hashing
+  - Seurat R tutorial
+  - R project organization
+  - sample metadata single-cell
+  - Wei 2025 Immunity
 license: "CC-BY-4.0"
 editor_options: 
   markdown: 
@@ -30,15 +34,15 @@ editor_options:
 
 ```
 
-Approximate time: 35 minutes
+Approximate time: 20 minutes
 
 ## Learning objectives 
 
 In this lesson, we will:
 
-- Learning Objective 1
-- Learning Objective 2
-- Learning Objective 3
+- Describe the DOGMA-seq HIV gut dataset and the modalities it measures
+- Set up an organized R project and analysis script for the workshop
+- Explore the sample metadata to identify which samples are pooled and need demultiplexing
 
 ## Overview of lesson
 

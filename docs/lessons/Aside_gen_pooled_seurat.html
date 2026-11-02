@@ -8,8 +8,8 @@
 
 <meta name="author" content="Noor Sohail">
 <meta name="dcterms.date" content="2026-10-31">
-<meta name="keywords" content="keyword_1, keyword_2, keyword_3, keyword_4, keyword_5, keyword_6">
-<meta name="description" content="Write a description of the lesson here.">
+<meta name="keywords" content="merge Seurat objects, for loop Seurat multiple samples, Read10X multiple samples, cellranger-arc per_barcode_metrics, HTODemux pooled samples, Seurat JoinLayers, mitochondrial ratio filtering, Harmony integration Seurat, scRNA-seq clustering workflow, DOGMA-seq Seurat processing">
+<meta name="description" content="Shows how the full DOGMA-seq gut dataset was assembled by looping over every library to create a Seurat object with RNA, HTO, and ADT assays, demultiplexing the pooled samples along the way. Merges the libraries, filters cells by mitochondrial content, and runs the standard RNA workflow of normalization, PCA, Harmony integration, UMAP, and clustering.">
 
 <title>Generating Pooled Seurat Object – Single-cell Multiomics</title>
 <style>
@@ -3991,7 +3991,7 @@ var data = {
 
 }
 
-,"blob":{"1":"2","10":"G-68JBPLLNLG|GT-M399CZS","11":true,"14":"6as1","15":"0","16":"ChEIgIah1wYQ2sSBv5bL/brhARIdAIgxJrt6fQ5zeqgyFAoBcv7OdEzj4lzkidBJtaEaAtI3","17":"","19":"dataLayer","20":"","21":"www.googletagmanager.com","22":"eyIwIjoiVVMiLCIxIjoiVVMtTUEiLCIyIjpmYWxzZSwiMyI6IiIsIjQiOiIiLCI1Ijp0cnVlLCI2IjpmYWxzZSwiOSI6ZmFsc2V9","23":"google.tagmanager.debugui2.queue","24":"tagassistant.google.com","27":0.005,"3":"www.googletagmanager.com","30":"US","31":"US-MA","32":true,"34":"G-68JBPLLNLG","35":"G","36":"https://adservice.google.com/pagead/regclk","37":"__TAGGY_INSTALLED","38":"cct.google","39":"googTaggyReferrer","40":"https://cct.google/taggy/agent.js","41":"google.tagmanager.ta.prodqueue","42":0.01,"43":"{\"keys\":[{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BJBunb2sFHwZi+ZWVIRpn+K6ts3gDu6dmlW51+XrL3cmMQcfNZnImXlJ7UN2o4V5D7WeQQeHyaRwIDYTOo/ADnE=\",\"version\":0},\"id\":\"d351fb21-5503-4621-802d-f8ffaeb23326\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BPQgQNuPZ3+UNo5VoSQwZ5UBr0enVh0Kcq+73F9AkCYx3HEL6EeIdZYcbvj7E02oIKYGCUYmcnU4c8IYF6L6aLY=\",\"version\":0},\"id\":\"c42553eb-286b-486c-a4ff-8671edfa2b88\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BOiGk3UEjaq6gf8or9me+dib7Nym11ubZOs5DVH4N1G+8Cu9vfzwf43qR6ojZlFiTH1ikl0V7RGAheb9RGMrvGs=\",\"version\":0},\"id\":\"81647135-569d-4d78-bd11-e84fd7aa1dd2\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BKo4GRWS+NzjY1eenrOeuBCsoWI0gxwKe63s+S3Hrgy9nlIOeXltfpxDYK5qSpD4Ux/ve52CFoBgwTDZumjrsvc=\",\"version\":0},\"id\":\"7bd1d6af-60de-4d00-b626-2b46cde882c0\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BJQUwWTHGbW1IDLXpZhZt2INRv7UOm2zG6gOfrdRdkJvgQYj4tR0ZSGozkxtp5u8sY3DRX6tXOvD4UenAuqBPJY=\",\"version\":0},\"id\":\"56bdc1b3-298c-4892-b66a-2e53eb612b25\"}]}","44":"118897920~118897930~120469145~120469153~121246026~121246034","45":true,"46":{"1":"1000","10":"6al0","11":"6a60","14":"1000","16":"US-CO~US-CT~US-MT~US-NE~US-NH~US-TX~US-MN~US-NJ~US-MD~US-OR~US-DE","17":"US-CO~US-CT~US-MT~US-NE~US-NH~US-TX~US-MN~US-NJ~US-MD~US-OR~US-DE","2":"9","20":"5000","21":"5000","22":"4.6.0","23":"0.0.0","25":"1","26":"4000","27":"100","3":"5","4":"ad_storage|analytics_storage|ad_user_data|ad_personalization","44":"15000","48":"30000","5":"ad_storage|analytics_storage|ad_user_data","6":"1","61":"1000","62":"A6ONHRY7/bvBro+IMZd/a6LNjn7SSv999SkN/hFAE9L6vMr34dNgfdSVdYmv4U+NHZg1sxd38RtciRpRUtIRPgQAAACCeyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGV0YWdtYW5hZ2VyLmNvbTo0NDMiLCJmZWF0dXJlIjoiU2hhcmVkV29ya2VyRXh0ZW5kZWRMaWZldGltZSIsImV4cGlyeSI6MTc3NjcyOTYwMCwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ==","63":"1000","66":"100","7":"10","72":"50"},"5":"G-68JBPLLNLG","55":["G-68JBPLLNLG"],"56":[{"1":403,"3":0.5,"4":115938465,"5":115938466,"6":0,"7":2},{"1":404,"3":0.5,"4":115938468,"5":115938469,"6":0,"7":1},{"1":674,"3":0.01,"4":123692836,"5":123692834,"6":123692835,"7":1},{"1":671,"3":0.01,"4":123691408,"5":123691407,"6":0,"7":3},{"1":585,"2":true},{"1":602,"2":true},{"1":474,"3":0.1,"4":117776795,"5":117776796,"6":0,"7":3},{"1":609,"3":0.1,"4":120420416,"5":120420414,"6":120420415,"7":1},{"1":607,"3":0.1,"4":121191155,"5":121191153,"6":121191154,"7":3},{"1":568,"3":0.01,"4":121399758,"5":121399757,"6":0,"7":3},{"1":490,"2":true},{"1":491,"3":0.01,"4":118012007,"5":118012008,"6":118012009,"7":1},{"1":480,"2":true},{"1":594,"3":0.01,"4":119793974,"5":119793972,"6":119793973,"7":1},{"1":550,"2":true},{"1":613,"2":true},{"1":592,"3":0.01,"4":123322203,"5":123322201,"6":123322202,"7":3},{"1":669,"3":1,"4":123691370,"5":123691369,"6":0,"7":1},{"1":663,"2":true},{"1":567,"3":0.1,"4":120895657,"5":120895655,"6":120895656,"7":3},{"1":620,"2":true},{"1":642,"3":0.1,"4":123814185,"5":123814183,"6":123814184,"7":1},{"1":617,"3":0.1,"4":123814946,"5":123814944,"6":123814945,"7":1},{"1":626,"2":true},{"1":627,"2":true},{"1":666,"3":0.1,"4":123620777,"5":123620775,"6":123620776,"7":1},{"1":616,"3":0.01,"4":123785234,"5":123785232,"6":123785233,"7":1},{"1":553,"2":true},{"1":608,"3":0.1,"4":120412528,"5":120412526,"6":120412527,"7":1},{"1":506,"2":true},{"1":561,"2":true},{"1":481,"2":true},{"1":562,"3":0.01,"4":119404697,"5":119404696,"6":0,"7":1},{"1":482,"2":true},{"1":612,"3":0.05,"4":120912673,"5":120912672,"6":121375529,"7":1},{"1":547,"3":0.01,"4":119860443,"5":119860442,"6":119863601,"7":2},{"1":679,"2":true},{"1":450,"3":0.01,"4":117227714,"5":117227715,"6":117227716,"7":3},{"1":582,"3":0.01,"4":119381664,"5":119381662,"6":119381663,"7":3},{"1":443,"3":0.01,"4":117628654,"5":117628655,"6":117628656,"7":3},{"1":570,"2":true},{"1":662,"2":true},{"1":498,"3":0.2,"4":115616985,"5":115616986,"6":0,"7":1},{"1":637,"2":true},{"1":495,"3":0.05,"4":118131810,"5":118131808,"6":118131809,"7":3},{"1":564,"3":0.0001,"4":119205317,"5":119205315,"6":119205316,"7":1},{"1":658,"3":0.001,"4":123820802,"5":123820800,"6":123820801,"7":1},{"1":610,"3":0.5,"4":120385423,"5":120385422,"6":0,"7":1},{"1":576,"3":0.01,"4":119317810,"5":119317811,"6":119318177,"7":3},{"1":677,"3":0.1,"4":123636747,"5":123636746,"6":0,"7":1},{"1":605,"3":0.001,"4":120032690,"5":120032689,"6":120032691,"7":1},{"1":664,"2":true},{"1":524,"2":true}],"59":["G-68JBPLLNLG"],"6":"123131330","62":true,"63":0.005,"66":true,"67":["120213116"]}
+,"blob":{"1":"2","10":"G-68JBPLLNLG|GT-M399CZS","11":true,"14":"6at0","15":"0","16":"ChEIgIah1wYQ2sSBv5bL/brhARIdAIgxJrt6fQ5zeqgyFAoBcv7OdEzj4lzkidBJtaEaAtI3","17":"","19":"dataLayer","20":"","21":"www.googletagmanager.com","22":"eyIwIjoiVVMiLCIxIjoiVVMtTUEiLCIyIjpmYWxzZSwiMyI6IiIsIjQiOiIiLCI1Ijp0cnVlLCI2IjpmYWxzZSwiOSI6ZmFsc2V9","23":"google.tagmanager.debugui2.queue","24":"tagassistant.google.com","27":0.005,"3":"www.googletagmanager.com","30":"US","31":"US-MA","32":true,"34":"G-68JBPLLNLG","35":"G","36":"https://adservice.google.com/pagead/regclk","37":"__TAGGY_INSTALLED","38":"cct.google","39":"googTaggyReferrer","40":"https://cct.google/taggy/agent.js","41":"google.tagmanager.ta.prodqueue","42":0.01,"43":"{\"keys\":[{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BJBunb2sFHwZi+ZWVIRpn+K6ts3gDu6dmlW51+XrL3cmMQcfNZnImXlJ7UN2o4V5D7WeQQeHyaRwIDYTOo/ADnE=\",\"version\":0},\"id\":\"d351fb21-5503-4621-802d-f8ffaeb23326\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BPQgQNuPZ3+UNo5VoSQwZ5UBr0enVh0Kcq+73F9AkCYx3HEL6EeIdZYcbvj7E02oIKYGCUYmcnU4c8IYF6L6aLY=\",\"version\":0},\"id\":\"c42553eb-286b-486c-a4ff-8671edfa2b88\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BOiGk3UEjaq6gf8or9me+dib7Nym11ubZOs5DVH4N1G+8Cu9vfzwf43qR6ojZlFiTH1ikl0V7RGAheb9RGMrvGs=\",\"version\":0},\"id\":\"81647135-569d-4d78-bd11-e84fd7aa1dd2\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BKo4GRWS+NzjY1eenrOeuBCsoWI0gxwKe63s+S3Hrgy9nlIOeXltfpxDYK5qSpD4Ux/ve52CFoBgwTDZumjrsvc=\",\"version\":0},\"id\":\"7bd1d6af-60de-4d00-b626-2b46cde882c0\"},{\"hpkePublicKey\":{\"params\":{\"aead\":\"AES_128_GCM\",\"kdf\":\"HKDF_SHA256\",\"kem\":\"DHKEM_P256_HKDF_SHA256\"},\"publicKey\":\"BJQUwWTHGbW1IDLXpZhZt2INRv7UOm2zG6gOfrdRdkJvgQYj4tR0ZSGozkxtp5u8sY3DRX6tXOvD4UenAuqBPJY=\",\"version\":0},\"id\":\"56bdc1b3-298c-4892-b66a-2e53eb612b25\"}]}","44":"118897920~118897930~120469145~120469153~121246026~121246034","45":true,"46":{"1":"1000","10":"6al0","11":"6a60","14":"1000","16":"US-CO~US-CT~US-MT~US-NE~US-NH~US-TX~US-MN~US-NJ~US-MD~US-OR~US-DE","17":"US-CO~US-CT~US-MT~US-NE~US-NH~US-TX~US-MN~US-NJ~US-MD~US-OR~US-DE","2":"9","20":"5000","21":"5000","22":"4.6.0","23":"0.0.0","25":"1","26":"4000","27":"100","3":"5","4":"ad_storage|analytics_storage|ad_user_data|ad_personalization","44":"15000","48":"30000","5":"ad_storage|analytics_storage|ad_user_data","6":"1","61":"1000","62":"A6ONHRY7/bvBro+IMZd/a6LNjn7SSv999SkN/hFAE9L6vMr34dNgfdSVdYmv4U+NHZg1sxd38RtciRpRUtIRPgQAAACCeyJvcmlnaW4iOiJodHRwczovL3d3dy5nb29nbGV0YWdtYW5hZ2VyLmNvbTo0NDMiLCJmZWF0dXJlIjoiU2hhcmVkV29ya2VyRXh0ZW5kZWRMaWZldGltZSIsImV4cGlyeSI6MTc3NjcyOTYwMCwiaXNUaGlyZFBhcnR5Ijp0cnVlfQ==","63":"1000","66":"100","7":"10","72":"50"},"5":"G-68JBPLLNLG","55":["G-68JBPLLNLG"],"56":[{"1":403,"3":0.5,"4":115938465,"5":115938466,"6":0,"7":2},{"1":404,"3":0.5,"4":115938468,"5":115938469,"6":0,"7":1},{"1":674,"3":0.01,"4":123692836,"5":123692834,"6":123692835,"7":1},{"1":671,"3":0.01,"4":123691408,"5":123691407,"6":0,"7":3},{"1":585,"2":true},{"1":602,"2":true},{"1":474,"3":0.1,"4":117776795,"5":117776796,"6":0,"7":3},{"1":609,"3":0.1,"4":120420416,"5":120420414,"6":120420415,"7":1},{"1":607,"3":0.1,"4":121191155,"5":121191153,"6":121191154,"7":3},{"1":568,"3":0.01,"4":121399758,"5":121399757,"6":0,"7":3},{"1":490,"2":true},{"1":491,"3":0.01,"4":118012007,"5":118012008,"6":118012009,"7":1},{"1":480,"2":true},{"1":594,"3":0.01,"4":119793974,"5":119793972,"6":119793973,"7":1},{"1":550,"2":true},{"1":613,"2":true},{"1":592,"3":0.01,"4":123322203,"5":123322201,"6":123322202,"7":3},{"1":669,"3":1,"4":123691370,"5":123691369,"6":0,"7":1},{"1":663,"2":true},{"1":567,"3":0.1,"4":120895657,"5":120895655,"6":120895656,"7":3},{"1":620,"2":true},{"1":642,"3":0.1,"4":123814185,"5":123814183,"6":123814184,"7":1},{"1":617,"3":0.1,"4":123814946,"5":123814944,"6":123814945,"7":1},{"1":626,"2":true},{"1":627,"2":true},{"1":666,"3":0.1,"4":123620777,"5":123620775,"6":123620776,"7":1},{"1":616,"3":0.01,"4":123785234,"5":123785232,"6":123785233,"7":1},{"1":553,"2":true},{"1":608,"3":0.1,"4":120412528,"5":120412526,"6":120412527,"7":1},{"1":506,"2":true},{"1":561,"2":true},{"1":481,"2":true},{"1":562,"3":0.01,"4":119404697,"5":119404696,"6":0,"7":1},{"1":482,"2":true},{"1":612,"3":0.05,"4":120912673,"5":120912672,"6":121375529,"7":1},{"1":547,"3":0.01,"4":119860443,"5":119860442,"6":119863601,"7":2},{"1":679,"2":true},{"1":450,"3":0.01,"4":117227714,"5":117227715,"6":117227716,"7":3},{"1":582,"3":0.01,"4":119381664,"5":119381662,"6":119381663,"7":3},{"1":443,"3":0.01,"4":117628654,"5":117628655,"6":117628656,"7":3},{"1":570,"2":true},{"1":662,"2":true},{"1":498,"3":0.2,"4":115616985,"5":115616986,"6":0,"7":1},{"1":637,"2":true},{"1":495,"3":0.05,"4":118131810,"5":118131808,"6":118131809,"7":3},{"1":564,"3":0.0001,"4":119205317,"5":119205315,"6":119205316,"7":1},{"1":658,"3":0.001,"4":123820802,"5":123820800,"6":123820801,"7":1},{"1":610,"3":0.5,"4":120385423,"5":120385422,"6":0,"7":1},{"1":576,"3":0.01,"4":119317810,"5":119317811,"6":119318177,"7":3},{"1":677,"2":true},{"1":605,"3":0.001,"4":120032690,"5":120032689,"6":120032691,"7":1},{"1":664,"2":true},{"1":524,"2":true}],"59":["G-68JBPLLNLG"],"6":"123131330","62":true,"63":0.005,"66":true,"67":["120213116"]}
 ,"permissions":{
 "__actids":{"read_container_data":{}}
 ,
@@ -4506,7 +4506,7 @@ B.next()){var F=n(E.value),G=F.next().value,I=F.next().value;k[G]=I}}finally{z(B
 var Px=function(a){var b=this;this.initTime=(new Date).getTime();this.H=new Mx(15,this.initTime);var c=new Promise(function(e){A.setTimeout(function(){e()},20)}),d=Nx(a).then(function(e){b.H=new Lx(e);Ox(b,e)}).catch(function(){b.H=new Mx(4,b.initTime)});this.K=Promise.race([c,d])},Ox=function(a,b){var c=function(d){d&&d.addEventListener("statechange",function(){if(d.state==="redundant"){var e=b.active;e&&e.state!=="redundant"||(a.H=new Mx(10,a.initTime))}})};c(b.active);c(b.waiting);c(b.installing);
 b.addEventListener("updatefound",function(){c(b.installing)})};Px.prototype.delegate=function(a,b,c){var d=this;this.K.then(function(){d.H.Mm(a,b,c)})};Px.prototype.getState=function(){return 2};
 var Nx=function(a){var b,c=Lf(11);c=Lf(10);b=c;var d={scope:(ac(a.href,"/")?a.href.slice(0,-1):a.href)+"/_/service_worker"};b&&(d.updateViaCache="all");var e,f=Qx(a,b),g=new Map([["path",a.pathname]]),h=jq(tc(f).toString());e=lq(h.hk,h.params,h.fragment,g);var k=Rc(),m=tc(e);try{return k.register(m,d)}catch(p){try{return k.register(m.toString(),d)}catch(q){return Promise.reject(q)}}};
-function Qx(a,b){var c=kq(Kx),d=a.pathname.split("/").filter(function(h){return h.length>0}),e=[].concat(w(d),["_","service_worker",b,"sw.js"]),f=n(e),g=f.next();try{for(;!g.done;g=f.next())c=mq(c,g.value)}finally{z(f,g)}return c};function Rx(a){var b=uk(qk.ba.Dh),c=b==null?void 0:b[a];c||a!=="lite"||(c=b==null?void 0:b.full);return c}var Sx=function(a,b,c){var d=Rx("full");d?d.delegate(a,b,c):c({failureType:16})};function Tx(a,b,c,d,e,f){Sx({commandType:0,params:{url:a,method:1,templates:b,body:"",processResponse:!1,encryptionKeyString:e,soReferrer:A.location.href,collectEncryptionMetrics:f}},c,function(g){d(g.failureType,g.data)})};var jy=function(){Ng.apply(this,arguments)};ta(jy,Ng);jy.prototype.K=function(a,b){hd(a,void 0,Pg(this,b),b.attribution_reporting&&hx()?fx:{})};jy.prototype.H=function(a,b){var c=b.attribution_reporting&&hx()?{attributionReporting:gx}:{},d=Pg(this,b);b.process_response?Xw(a,void 0,this,c,void 0,d):vd(a,void 0,c,void 0,d)};var uy=function(a,b){this.H=a;this.timeoutMs=b;this.Ab=void 0},vy=function(a){a.Ab||(a.Ab=setTimeout(function(){a.H();a.Ab=void 0},a.timeoutMs))},wy=function(a){a.Ab&&(clearTimeout(a.Ab),a.Ab=void 0)};var xy=function(){var a=Nf(66,0);this.K=[];this.T=a;this.H=$a()},zy=function(a){var b=yy;b.K.push(a);b.P||(b.P=function(){var c=n(b.K),d=c.next();try{for(;!d.done;d=c.next()){var e=d.value;try{e()}catch(k){}}}finally{z(c,d)}var f=n(b.H.values()),g=f.next();try{for(;!g.done;g=f.next()){var h=void 0;(h=g.value.gk)==null||wy(h)}}finally{z(f,g)}b.H.clear()},id(A,"pagehide",b.P))},Ay=function(a){var b=a.match(Ml)[3]||null,c=(b?decodeURI(b):b)||"",d=Pl(a,"label")||"",e=Pl(a,"random")||"";return c+":"+Ll(d)+
+function Qx(a,b){var c=kq(Kx),d=a.pathname.split("/").filter(function(h){return h.length>0}),e=[].concat(w(d),["_","service_worker",b,"sw.js"]),f=n(e),g=f.next();try{for(;!g.done;g=f.next())c=mq(c,g.value)}finally{z(f,g)}return c};function Rx(a){var b=uk(qk.ba.Dh),c=b==null?void 0:b[a];c||a!=="lite"||(c=b==null?void 0:b.full);return c}var Sx=function(a,b,c){var d=Rx("full");d?d.delegate(a,b,c):c({failureType:16})};function Tx(a,b,c,d,e,f){Sx({commandType:0,params:{url:a,method:1,templates:b,body:"",processResponse:!1,encryptionKeyString:e,soReferrer:A.location.href,collectEncryptionMetrics:f}},c,function(g){d(g.failureType,g.data)})};var jy=function(){Ng.apply(this,arguments)};ta(jy,Ng);jy.prototype.K=function(a,b){hd(a,void 0,Pg(this,b),b.attribution_reporting&&hx()?fx:{})};jy.prototype.H=function(a,b){var c=b.attribution_reporting&&hx()?{attributionReporting:gx}:{},d=Pg(this,b);b.process_response?Xw(a,void 0,this,c,void 0,d):vd(a,void 0,c,void 0,d)};var uy=function(a,b){this.H=a;this.timeoutMs=b;this.Ab=void 0},vy=function(a){a.Ab===void 0&&(a.Ab=A.setTimeout(function(){a.Ab=void 0;a.H()},a.timeoutMs))},wy=function(a){a.Ab!==void 0&&(A.clearTimeout(a.Ab),a.Ab=void 0)};var xy=function(){var a=Nf(66,0);this.K=[];this.T=a;this.H=$a()},zy=function(a){var b=yy;b.K.push(a);b.P||(b.P=function(){var c=n(b.K),d=c.next();try{for(;!d.done;d=c.next()){var e=d.value;try{e()}catch(k){}}}finally{z(c,d)}var f=n(b.H.values()),g=f.next();try{for(;!g.done;g=f.next()){var h=void 0;(h=g.value.gk)==null||wy(h)}}finally{z(f,g)}b.H.clear()},id(A,"pagehide",b.P))},Ay=function(a){var b=a.match(Ml)[3]||null,c=(b?decodeURI(b):b)||"",d=Pl(a,"label")||"",e=Pl(a,"random")||"";return c+":"+Ll(d)+
 ":"+Ll(e)};xy.prototype.addRequest=function(a,b,c){var d=Ay(a);if(!(this.H.has(d)||this.H.size>=this.T)){var e={};b&&b>0&&c&&(e.gk=new uy(c,b));this.H.set(d,e);var f;(f=e.gk)==null||vy(f)}};var Tl=function(a,b){var c=Ay(b),d,e;(d=a.H.get(c))==null||(e=d.gk)==null||wy(e);a.H.delete(c)};xy.prototype.getSize=function(){return this.H.size};var Ty={X:{kp:0,kk:1,Ug:2,vk:3,gi:4,sk:5,uk:6,wk:7,hi:8,Fl:9,El:10,Mi:11,Gl:12,th:13,Il:14,Yi:15,fp:16,gd:17,fj:18,gj:19,ij:20,hm:21,jj:22}};Ty.X[Ty.X.kp]="RESERVED_ZERO";Ty.X[Ty.X.kk]="ADS_CONVERSION_HIT";Ty.X[Ty.X.Ug]="CONTAINER_EXECUTE_START";Ty.X[Ty.X.vk]="CONTAINER_SETUP_END";Ty.X[Ty.X.gi]="CONTAINER_SETUP_START";Ty.X[Ty.X.sk]="CONTAINER_BLOCKING_END";Ty.X[Ty.X.uk]="CONTAINER_EXECUTE_END";Ty.X[Ty.X.wk]="CONTAINER_YIELD_END";Ty.X[Ty.X.hi]="CONTAINER_YIELD_START";Ty.X[Ty.X.Fl]="EVENT_EXECUTE_END";
 Ty.X[Ty.X.El]="EVENT_EVALUATION_END";Ty.X[Ty.X.Mi]="EVENT_EVALUATION_START";Ty.X[Ty.X.Gl]="EVENT_SETUP_END";Ty.X[Ty.X.th]="EVENT_SETUP_START";Ty.X[Ty.X.Il]="GA4_CONVERSION_HIT";Ty.X[Ty.X.Yi]="PAGE_LOAD";Ty.X[Ty.X.fp]="PAGEVIEW";Ty.X[Ty.X.gd]="SNIPPET_LOAD";Ty.X[Ty.X.fj]="TAG_CALLBACK_ERROR";Ty.X[Ty.X.gj]="TAG_CALLBACK_FAILURE";Ty.X[Ty.X.ij]="TAG_CALLBACK_SUCCESS";Ty.X[Ty.X.hm]="TAG_EXECUTE_END";Ty.X[Ty.X.jj]="TAG_EXECUTE_START";var Uy={};Uy.X=Ty.X;var Vy={Xt:"L",np:"S",iu:"Y",Ns:"B",ot:"E",Tt:"I",eu:"TC",Bt:"HTC",rt:"F",St:"C"},Wy={np:"S",kt:"V",Us:"E",du:"tag"},Xy={},Yy=(Xy[Uy.X.gj]="6",Xy[Uy.X.ij]="5",Xy[Uy.X.fj]="7",Xy);function Zy(a){var b=H(5),c=Number(a.eventId),d=Number(a.tagId);return($b(b,"GTM-")?b:"GTM-"+b)+":"+(Kb(c)?c+":":"")+(Kb(d)?d+":":"")+a.stage};function $y(){var a=Ad();return!!(a&&a.mark instanceof Function&&a.measure instanceof Function&&a.clearMeasures instanceof Function&&a.clearMarks instanceof Function)};var az=function(){this.H={}};az.prototype.mark=function(a,b){if($y()){var c=Zy(a),d,e;if(d=(e=Ad())==null?void 0:e.mark(c,b))return this.H[c]=d}};var bz;function cz(){bz||(bz=new az);return bz}function dz(a){var b=cz(),c=Zy(a);return b.H[c]}function ez(a,b){return cz().mark(a,b)};function fz(a,b){if($y()){a.entry=Zy(a);var c=ma(Object,"assign").call(Object,{},a);c.stage=b;delete c.sent;var d=dz(b===Uy.X.gd?{stage:Uy.X.gd}:c),e=dz(a);if(d&&e&&!(d.startTime>e.startTime)){c.stage=b+":"+a.stage;var f=Zy(c),g={start:d.name,end:e.name},h,k;return(k=(h=Ad())==null?void 0:h.measure(f,g))==null?void 0:k.duration}}};function gz(){function a(c,d){var e=yb(vb[d]||[]);e&&b.push([c,e])}var b=[];a("u","GTM");a("ut","TAGGING");a("h","HEALTH");return b};var hz="https://"+H(21),iz=function(){this.P=!1;this.T=[];this.Z=[];this.H={TC:0,HTC:0};this.K={}},jz=function(a,b,c,d){a.K[b]||(a.K[b]={});a.K[b][c]=d},mz=function(a){var b="",c="",d=kz();Kb(d)&&(a.H.I=Math.floor(d));c=lz(a.H,Vy).toString();var e=n(Object.keys(a.K)),f=e.next();try{for(;!f.done;f=e.next()){var g=f.value,h=a.K[g].name,k="",m=lz(a.K[g],Wy);m&&(k=h+"."+m.toString(),b+="~"+k)}}finally{z(e,f)}var p="~AWCT"+a.T.join("."),q="~GA"+a.Z.join("."),r="&ccid="+mm().toString()+"&cid="+H(5).toString()+
 "&l="+c+b+(a.T.length?p:"")+(a.Z.length?q:"");if(P(214)){var t,u=(t=Ad())==null?void 0:t.getEntriesByName(Uc).map(function(v){return String(v.duration)}).join(".");u&&(r+="~SS"+u)}return r},nz=function(a,b){if(!b.stage||a.P||!$y()||dz(b))return!1;var c,d=(c=Ad())==null?void 0:c.timeOrigin;if(!Kb(d))a.P=!0;else if(Kb(Zi(11))&&!dz({stage:Uy.X.gd})&&!a.P&&$y())try{var e=Number(Zi(11));ez({stage:Uy.X.gd},{startTime:Math.max(e-d,0)});ez({stage:Uy.X.Yi},{startTime:0});var f=fz({stage:Uy.X.gd},Uy.X.Yi);
@@ -4785,7 +4785,7 @@ for(var q=0;q<p.length;q++)f=f&&f[p[q]];g=VO(f,"j",m)}if(f!==void 0)break}if(f==
 var XO=function(a){if(my(a,"ccd_add_1p_data",!1)&&hp(cq)){var b=a.M.ib[K.D.Al];if(Db(b)&&b.enable_code){var c=Q(a.M,K.D.zc);if(c===null)T(a,L.J.im,null);else if(b.enable_code&&Db(c)&&(bw(c),T(a,L.J.im,c)),Db(b.selectors)){var d=L.J.zp,e;var f=b.selectors,g=!0;g=g===void 0?!1:g;if(f){var h={},k=!1,m={};k=WO(h,"email",f.email,m)||k;k=WO(h,"phone_number",f.phone,m)||k;h.address=[];for(var p=f.name_and_address||[],q=0;q<p.length;q++){var r={},t={};k=WO(r,"first_name",p[q].first_name,t)||k;k=WO(r,"last_name",
 p[q].last_name,t)||k;k=WO(r,"street",p[q].street,t)||k;k=WO(r,"city",p[q].city,t)||k;k=WO(r,"region",p[q].region,t)||k;k=WO(r,"country",p[q].country,t)||k;k=WO(r,"postal_code",p[q].postal_code,t)||k;h.address.push(r);g&&(r._tag_metadata=t)}g&&(h._tag_metadata=m);e=k?h:void 0}else e=void 0;T(a,d,e)}}}};function nQ(a,b,c,d){}nQ.U="internal.executeEventProcessor";function oQ(a){var b;return Vd(b,this.V,1)}oQ.U="internal.executeJavascriptString";function pQ(a){var b;if(!ah(a))throw N(this.getName(),["string"],arguments);var c=A;try{b=yj(c.escape(c.atob(a)))}catch(d){return}return b};function qQ(a){var b="";return b}qQ.U="internal.generateClientId";function rQ(a){var b={};return Vd(b)}rQ.U="internal.getAdsCookieWritingOptions";function sQ(a,b){var c=!1;return c}sQ.U="internal.getAllowAdPersonalization";function tQ(a,b){b=b===void 0?!0:b;var c;return c}tQ.U="internal.getAuid";function uQ(){var a=[];O(this,"read_container_data"),a=nm();return Vd(a)}uQ.U="internal.getContainerIds";function vQ(){var a=new nb;O(this,"read_container_data"),a.set("containerId",H(5)),a.set("version",H(1)),a.set("environmentName",H(20)),a.set("debugMode",If(71)),a.set("previewMode",If(29)),a.set("environmentMode",If(28)),a.set("firstPartyServing",Pj()),a.set("containerUrl",Uc),a.set("isGoogleOnlyMode",If(62)),a.Va();return a}vQ.publicName="getContainerVersion";function wQ(a,b){b=b===void 0?!0:b;var c;return c}wQ.publicName="getCookieValues";function xQ(){var a="";return a}xQ.U="internal.getCorePlatformServicesParam";function yQ(){return Fk()}yQ.U="internal.getCountryCode";function zQ(){var a=[];a=km();return Vd(a)}zQ.U="internal.getDestinationIds";function AQ(a){var b=new nb;return b}AQ.U="internal.getDeveloperIds";function BQ(a){var b;return b}BQ.U="internal.getEcsidCookieValue";function CQ(a,b){var c=null;return c}CQ.U="internal.getElementAttribute";function DQ(a){var b=null;return b}DQ.U="internal.getElementById";function EQ(a){var b="";return b}EQ.U="internal.getElementInnerText";function FQ(a){var b=null;return b}FQ.U="internal.getElementParent";function GQ(a){var b=null;return b}GQ.U="internal.getElementPreviousSibling";function HQ(a,b){var c=null;return Vd(c)}HQ.U="internal.getElementProperty";function IQ(a){var b;return b}IQ.U="internal.getElementValue";function JQ(a){var b=0;return b}JQ.U="internal.getElementVisibilityRatio";function KQ(a){var b=null;return b}KQ.U="internal.getElementsByCssSelector";
 function LQ(a){var b;if(!ah(a))throw N(this.getName(),["string"],arguments);O(this,"read_event_data",a);var c;a:{var d=a,e=$H(this).originalEventData;if(e){for(var f=e,g={},h={},k={},m=[],p=d.split("\\\\"),q=0;q<p.length;q++){for(var r=p[q].split("\\."),t=0;t<r.length;t++){for(var u=r[t].split("."),v=0;v<u.length;v++)m.push(u[v]),v!==u.length-1&&m.push(k);t!==r.length-1&&m.push(h)}q!==p.length-1&&m.push(g)}var x=[],y="",B=n(m),E=B.next();
-try{for(;!E.done;E=B.next()){var F=E.value;F===k?(x.push(y),y=""):y=F===g?y+"\\":F===h?y+".":y+F}}finally{z(B,E)}y&&x.push(y);var G=n(x),I=G.next();try{for(;!I.done;I=G.next()){if(f==null){c=void 0;break a}f=f[I.value]}}finally{z(G,I)}c=f}else c=void 0}b=Vd(c,this.V,1);return b}LQ.U="internal.getEventData";function MQ(a){var b=null;if(!ah(a))throw N(this.getName(),["string"],arguments);O(this,"read_dom_elements","css",a);try{var c=C.querySelector(a);c&&(b=new Sd(c))}catch(d){return null}return b}MQ.U="internal.getFirstElementByCssSelector";function NQ(){var a;return a}NQ.U="internal.getGsaExperimentId";function OQ(){return new Sd(oo)}OQ.U="internal.getHtmlId";function PQ(){var a;return a}PQ.U="internal.getIframingState";function QQ(a,b){var c={};return Vd(c)}QQ.U="internal.getLinkerValueFromLocation";function RQ(){var a=new nb;return a}RQ.U="internal.getPrivacyStrings";function SQ(a,b){var c;return c}SQ.U="internal.getProductSettingsParameter";function TQ(a,b){var c;return c}TQ.publicName="getQueryParameters";function UQ(a,b){var c;return c}UQ.publicName="getReferrerQueryParameters";function VQ(a){var b="";return b}VQ.publicName="getReferrerUrl";function WQ(){return Gk()}WQ.U="internal.getRegionCode";function XQ(a,b){var c;return c}XQ.U="internal.getRemoteConfigParameter";function YQ(a,b){var c=null;
+try{for(;!E.done;E=B.next()){var F=E.value;F===k?(x.push(y),y=""):y=F===g?y+"\\":F===h?y+".":y+F}}finally{z(B,E)}x.push(y);var G=n(x),I=G.next();try{for(;!I.done;I=G.next()){if(f==null){c=void 0;break a}f=f[I.value]}}finally{z(G,I)}c=f}else c=void 0}b=Vd(c,this.V,1);return b}LQ.U="internal.getEventData";function MQ(a){var b=null;if(!ah(a))throw N(this.getName(),["string"],arguments);O(this,"read_dom_elements","css",a);try{var c=C.querySelector(a);c&&(b=new Sd(c))}catch(d){return null}return b}MQ.U="internal.getFirstElementByCssSelector";function NQ(){var a;return a}NQ.U="internal.getGsaExperimentId";function OQ(){return new Sd(oo)}OQ.U="internal.getHtmlId";function PQ(){var a;return a}PQ.U="internal.getIframingState";function QQ(a,b){var c={};return Vd(c)}QQ.U="internal.getLinkerValueFromLocation";function RQ(){var a=new nb;return a}RQ.U="internal.getPrivacyStrings";function SQ(a,b){var c;return c}SQ.U="internal.getProductSettingsParameter";function TQ(a,b){var c;return c}TQ.publicName="getQueryParameters";function UQ(a,b){var c;return c}UQ.publicName="getReferrerQueryParameters";function VQ(a){var b="";return b}VQ.publicName="getReferrerUrl";function WQ(){return Gk()}WQ.U="internal.getRegionCode";function XQ(a,b){var c;return c}XQ.U="internal.getRemoteConfigParameter";function YQ(a,b){var c=null;
 return c}YQ.U="internal.getScopedElementsByCssSelector";function ZQ(){var a=new nb;a.set("width",0);a.set("height",0);return a}ZQ.U="internal.getScreenDimensions";function $Q(){var a=void 0;return a}$Q.U="internal.getSendTo";function aR(){var a="";return a}aR.U="internal.getTopSameDomainUrl";function bR(){var a="";return a}bR.U="internal.getTopWindowUrl";function cR(a){var b="";if(!bh(a))throw N(this.getName(),["string|undefined"],arguments);O(this,"get_url",a);b=zj(Fj(A.location.href),a);return b}cR.publicName="getUrl";function dR(){O(this,"get_user_agent");return Qc.userAgent}dR.publicName="getUserAgent";dR.U="internal.getUserAgent";function eR(){var a;return a?Vd(cH(a)):a}eR.U="internal.getUserAgentClientHints";var gR=function(a){var b=a.eventName===K.D.Nc&&Sm()&&Qj(kN(a)),c=S(a,L.J.Tl),d=S(a,L.J.lk),e=S(a,L.J.gg),f=S(a,L.J.Pe),g=S(a,L.J.ig),h=S(a,L.J.Te),k=S(a,L.J.mg),m=S(a,L.J.Bh),p=S(a,L.J.Ch),q=!!jN(a)||!!S(a,L.J.Mn);return!(!wd()&&!td()||e||q||f||g||h||k||p||m||b||c||!d&&fR())},fR=function(){return $i(12,function(){return!1})};function hR(){var a=A;return a.gaGlobal=a.gaGlobal||{}}function iR(a,b){var c=hR();if(c.vid===void 0||b&&!c.from_cookie)c.vid=a,c.from_cookie=b};var jR=["GA1"];
 var kR=function(a,b,c){var d=S(a,L.J.pk);if(d===void 0||c<=d)X(a,K.D.Bb,b),T(a,L.J.pk,c)},mR=function(a,b){var c=Qi(a,K.D.Bb);if(Q(a.M,K.D.Wc)&&Q(a.M,K.D.wc)||b&&c===b)return c;if(c){c=""+c;if(!lR(c,a))return R(31),a.isAborted=!0,T(a,L.J.eb,!0),"";iR(c,hp(K.D.ua));return c}R(32);a.isAborted=!0;T(a,L.J.eb,!0);return""},nR=function(a){var b=S(a,L.J.Ga),c=b.prefix+"_ga",d=Cv(b.prefix+"_ga",b.domain,b.path,jR,K.D.ua);if(!d){var e=String(Q(a.M,K.D.zd,""));e&&e!==c&&(d=Cv(e,b.domain,b.path,jR,K.D.ua))}return d},
 lR=function(a,b){var c;var d=S(b,L.J.Ga),e=d.prefix+"_ga",f=Vq(d,void 0,void 0,K.D.ua);if(Q(b.M,K.D.uc)===!1&&nR(b)===a)c=!0;else{var g;g=[jR[0],Uq(d.domain,d.path),a].join(".");c=Pq(e,g,f)!==1}return c};
@@ -5259,7 +5259,7 @@ margin-bottom: 0.25rem;
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../schedule/schedule.qmd"> 
+    <a class="nav-link" href="../schedule/schedule.html"> 
 <span class="menu-text">Schedule</span></a>
   </li>  
 </ul>
@@ -5309,16 +5309,16 @@ margin-bottom: 0.25rem;
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">Generating Pooled Seurat Object</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
   <div class="quarto-categories">
-    <div class="quarto-category">category_1</div>
-    <div class="quarto-category">category_2</div>
-    <div class="quarto-category">category_3</div>
-    <div class="quarto-category">category_4</div>
+    <div class="quarto-category">Data processing</div>
+    <div class="quarto-category">Seurat</div>
+    <div class="quarto-category">Demultiplexing</div>
+    <div class="quarto-category">Integration</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    <p>Write a description of the lesson here.</p>
+    <p>Shows how the full DOGMA-seq gut dataset was assembled by looping over every library to create a Seurat object with RNA, HTO, and ADT assays, demultiplexing the pooled samples along the way. Merges the libraries, filters cells by mitochondrial content, and runs the standard RNA workflow of normalization, PCA, Harmony integration, UMAP, and clustering.</p>
   </div>
 </div>
 
@@ -5346,7 +5346,7 @@ margin-bottom: 0.25rem;
 <div>
   <div class="keywords">
     <div class="block-title">Keywords</div>
-    <p>keyword_1, keyword_2, keyword_3, keyword_4, keyword_5, keyword_6</p>
+    <p>merge Seurat objects, for loop Seurat multiple samples, Read10X multiple samples, cellranger-arc per_barcode_metrics, HTODemux pooled samples, Seurat JoinLayers, mitochondrial ratio filtering, Harmony integration Seurat, scRNA-seq clustering workflow, DOGMA-seq Seurat processing</p>
   </div>
 </div>
 
@@ -5358,9 +5358,9 @@ margin-bottom: 0.25rem;
 <h2 class="anchored" data-anchor-id="learning-objectives">Learning objectives</h2>
 <p>In this lesson, we will:</p>
 <ul>
-<li>Learning Objective 1</li>
-<li>Learning Objective 2</li>
-<li>Learning Objective 3</li>
+<li>Automate loading and demultiplexing many samples with a <code>for</code> loop</li>
+<li>Merge per-sample Seurat objects and filter cells on mitochondrial content</li>
+<li>Process the RNA assay with normalization, PCA, Harmony, UMAP, and clustering</li>
 </ul>
 </section>
 <section id="overview-of-lesson" class="level2">
@@ -5590,8 +5590,8 @@ Figure 2: UMAP of the Harmony-integrated RNA expression, colored by clusters at
 </div>
 </div>
 <hr>
-<p><a href="tmp.qmd">Next Lesson &gt;&gt;</a></p>
-<p><a href="../schedule/schedule.qmd">Back to Schedule</a></p>
+<p><a href="../lessons/03_demultiplexing.html">Back to Lesson &gt;&gt;</a></p>
+<p><a href="../schedule/schedule.html">Back to Schedule</a></p>
 
 
 <!-- -->
@@ -6053,281 +6053,285 @@ Figure 2: UMAP of the Harmony-integrated RNA expression, colored by clusters at
 <div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> &quot;Generating Pooled Seurat Object&quot;</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> |</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">  Write a description of the lesson here. </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">  Shows how the full DOGMA-seq gut dataset was assembled by looping over every library to create a Seurat object with RNA, HTO, and ADT assays, demultiplexing the pooled samples along the way. Merges the libraries, filters cells by mitochondrial content, and runs the standard RNA workflow of normalization, PCA, Harmony integration, UMAP, and clustering.</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">  - Noor Sohail</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> &quot;2026-10-31&quot;</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> </span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - category_1</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">  - category_2</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - category_3</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">  - category_4</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">  - Data processing</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">  - Seurat</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">  - Demultiplexing</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">  - Integration</span></span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="an">keywords:</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">  - keyword_1</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">  - keyword_2</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">  - keyword_3</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">  - keyword_4</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">  - keyword_5</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">  - keyword_6</span></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="an">license:</span><span class="co"> &quot;CC-BY-4.0&quot;</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: 72</span></span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_libraries_data</span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries and data</span></span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>Approximate time: XX minutes</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning objectives </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">  - merge Seurat objects</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">  - for loop Seurat multiple samples</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">  - Read10X multiple samples</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">  - cellranger-arc per_barcode_metrics</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">  - HTODemux pooled samples</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">  - Seurat JoinLayers</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">  - mitochondrial ratio filtering</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">  - Harmony integration Seurat</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">  - scRNA-seq clustering workflow</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">  - DOGMA-seq Seurat processing</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="an">license:</span><span class="co"> &quot;CC-BY-4.0&quot;</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">  markdown: </span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">    wrap: 72</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_libraries_data</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries and data</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>In this lesson, we will:</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>Approximate time: XX minutes</span>
 <span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Learning Objective 1</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Learning Objective 2</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Learning Objective 3</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## Learning objectives </span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>In this lesson, we will:</span>
 <span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview of lesson</span></span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>When doing XYZ...</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Automate loading and demultiplexing many samples with a <span class="in">`for`</span> loop</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Merge per-sample Seurat objects and filter cells on mitochondrial content</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Process the RNA assay with normalization, PCA, Harmony, UMAP, and clustering</span>
 <span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Create Seurat object</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview of lesson</span></span>
 <span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>First, we set up the script so that we can loop through multiple samples with a <span class="in">`for`</span> loop. So we keep track of the sample names and create an empty list where we will store the Seurat objects. Additionally, as some of the datasets are pooled, we will need to run the demultiplexing steps for them in this step, so we create <span class="in">`samples_pooled`</span> to keep track of which samples those are.</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>When doing XYZ...</span>
 <span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup_metadata</span></span>
-<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="do">### Load libraries</span></span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qs)</span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(harmony)</span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="do">### Metadata</span></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>df_meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data_dogma_hiv/GSE299348/samples.tsv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(df_meta) <span class="ot">&lt;-</span> df_meta<span class="sc">$</span>library</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="fu">## Create Seurat object</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>First, we set up the script so that we can loop through multiple samples with a <span class="in">`for`</span> loop. So we keep track of the sample names and create an empty list where we will store the Seurat objects. Additionally, as some of the datasets are pooled, we will need to run the demultiplexing steps for them in this step, so we create <span class="in">`samples_pooled`</span> to keep track of which samples those are.</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup_metadata</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="do">### Load libraries</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qs)</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(harmony)</span>
 <span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="do">### Load every dataset</span></span>
-<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a><span class="co"># List of seurat object to eventually merge</span></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>list_seurat <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="do">### Metadata</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>df_meta <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data_dogma_hiv/GSE299348/samples.tsv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(df_meta) <span class="ot">&lt;-</span> df_meta<span class="sc">$</span>library</span>
 <span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Note pooled samples to dehash later</span></span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>samples_pooled <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PT1&quot;</span>, <span class="st">&quot;PT2&quot;</span>, <span class="st">&quot;PT3&quot;</span>)</span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="do">### Load every dataset</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a><span class="co"># List of seurat object to eventually merge</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>list_seurat <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>Next, we loop through each library in our metadata and build one Seurat object per sample. For every sample, the loop:</span>
-<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Selects real cells.** We read the <span class="in">`per_barcode_metrics.csv.gz`</span> file from the ATAC output of <span class="in">`cellranger-arc`</span> and keep only the barcodes where <span class="in">`is_cell == 1`</span>. This removes the empty droplets from the raw matrices so that the RNA and protein data contain the same set of cells as the ATAC data.</span>
-<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Creates the Seurat object.** We load the counts from the <span class="in">`ADT`</span> folder, subset the &quot;Gene Expression&quot; matrix to our cells, and create the <span class="in">`RNA`</span> assay. We also record the <span class="in">`patient`</span> and <span class="in">`hiv_status`</span> from the metadata.</span>
-<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Separates hashtags from proteins.** The &quot;Antibody Capture&quot; matrix holds both the hashtags and the surface proteins. For pooled samples, we read <span class="in">`hashing_info.txt.gz`</span> and store only the hashtags used in that pool as the <span class="in">`HTO`</span> assay. Every other antibody that is not a hashtag is stored as the <span class="in">`ADT`</span> assay.</span>
-<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Demultiplexes pooled samples.** For the samples in <span class="in">`samples_pooled`</span>, we remove low-count cells, CLR-normalize the hashtags, and run <span class="in">`HTODemux()`</span>, just as we did for <span class="in">`PT1`</span> in the previous lesson. We keep only the cells confidently assigned to a single hashtag and replace the <span class="in">`patient`</span> column with the patient matched to that hashtag.</span>
-<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Stores the result.** We prefix the patient IDs with <span class="in">`patient_`</span> so they are read as text rather than numbers, and add the object to <span class="in">`list_seurat`</span> under the sample name.</span>
-<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_samples_loop</span></span>
-<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop through each sample</span></span>
-<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (sample <span class="cf">in</span> df_meta<span class="sc">$</span>library) {</span>
-<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(sample)</span>
-<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>  patient <span class="ot">&lt;-</span> df_meta[sample, <span class="st">&quot;patient&quot;</span>]</span>
-<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>  hiv_status <span class="ot">&lt;-</span> df_meta[sample, <span class="st">&quot;hiv_status&quot;</span>]</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Note pooled samples to dehash later</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>samples_pooled <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PT1&quot;</span>, <span class="st">&quot;PT2&quot;</span>, <span class="st">&quot;PT3&quot;</span>)</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>Next, we loop through each library in our metadata and build one Seurat object per sample. For every sample, the loop:</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Selects real cells.** We read the <span class="in">`per_barcode_metrics.csv.gz`</span> file from the ATAC output of <span class="in">`cellranger-arc`</span> and keep only the barcodes where <span class="in">`is_cell == 1`</span>. This removes the empty droplets from the raw matrices so that the RNA and protein data contain the same set of cells as the ATAC data.</span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Creates the Seurat object.** We load the counts from the <span class="in">`ADT`</span> folder, subset the &quot;Gene Expression&quot; matrix to our cells, and create the <span class="in">`RNA`</span> assay. We also record the <span class="in">`patient`</span> and <span class="in">`hiv_status`</span> from the metadata.</span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Separates hashtags from proteins.** The &quot;Antibody Capture&quot; matrix holds both the hashtags and the surface proteins. For pooled samples, we read <span class="in">`hashing_info.txt.gz`</span> and store only the hashtags used in that pool as the <span class="in">`HTO`</span> assay. Every other antibody that is not a hashtag is stored as the <span class="in">`ADT`</span> assay.</span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Demultiplexes pooled samples.** For the samples in <span class="in">`samples_pooled`</span>, we remove low-count cells, CLR-normalize the hashtags, and run <span class="in">`HTODemux()`</span>, just as we did for <span class="in">`PT1`</span> in the previous lesson. We keep only the cells confidently assigned to a single hashtag and replace the <span class="in">`patient`</span> column with the patient matched to that hashtag.</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Stores the result.** We prefix the patient IDs with <span class="in">`patient_`</span> so they are read as text rather than numbers, and add the object to <span class="in">`list_seurat`</span> under the sample name.</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_samples_loop</span></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop through each sample</span></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (sample <span class="cf">in</span> df_meta<span class="sc">$</span>library) {</span>
 <span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Get cells of interest</span></span>
-<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>  cells <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(<span class="st">&quot;data_dogma_hiv/&quot;</span>,</span>
-<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;GSE299348/&quot;</span>, sample, </span>
-<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;/ATAC/per_barcode_metrics.csv.gz&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset</span>(is_cell <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(barcode)</span>
-<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Load counts</span></span>
-<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>  counts <span class="ot">&lt;-</span> <span class="fu">Read10X</span>(<span class="fu">file.path</span>(<span class="st">&quot;data_dogma_hiv&quot;</span>,</span>
-<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;GSE299348&quot;</span>,</span>
-<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>                              sample,</span>
-<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;ADT&quot;</span>))</span>
-<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>  <span class="do">### RNA expression</span></span>
-<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>  counts_gex <span class="ot">&lt;-</span> counts[[<span class="st">&quot;Gene Expression&quot;</span>]]</span>
-<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>  counts_gex <span class="ot">&lt;-</span> counts_gex[, cells]</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(sample)</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>  patient <span class="ot">&lt;-</span> df_meta[sample, <span class="st">&quot;patient&quot;</span>]</span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>  hiv_status <span class="ot">&lt;-</span> df_meta[sample, <span class="st">&quot;hiv_status&quot;</span>]</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Get cells of interest</span></span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>  cells <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(<span class="st">&quot;data_dogma_hiv/&quot;</span>,</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;GSE299348/&quot;</span>, sample, </span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;/ATAC/per_barcode_metrics.csv.gz&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>    <span class="fu">subset</span>(is_cell <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(barcode)</span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Load counts</span></span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>  counts <span class="ot">&lt;-</span> <span class="fu">Read10X</span>(<span class="fu">file.path</span>(<span class="st">&quot;data_dogma_hiv&quot;</span>,</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;GSE299348&quot;</span>,</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>                              sample,</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>                              <span class="st">&quot;ADT&quot;</span>))</span>
 <span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Create seurat object</span></span>
-<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>  seurat <span class="ot">&lt;-</span> <span class="fu">CreateSeuratObject</span>(</span>
-<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> counts_gex,</span>
-<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">assay =</span> <span class="st">&quot;RNA&quot;</span>,</span>
-<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">project =</span> sample)</span>
-<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>  seurat<span class="sc">$</span>patient <span class="ot">&lt;-</span> patient</span>
-<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>  seurat<span class="sc">$</span>hiv_status <span class="ot">&lt;-</span> hiv_status</span>
-<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>  <span class="do">### ADT and hashtags</span></span>
-<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>  counts_anitbody <span class="ot">&lt;-</span> counts[[<span class="st">&quot;Antibody Capture&quot;</span>]]</span>
-<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>  counts_anitbody <span class="ot">&lt;-</span> counts_anitbody[, cells]</span>
-<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Features all have _TotalA appended</span></span>
-<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(counts_anitbody) <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(<span class="fu">rownames</span>(counts_anitbody), <span class="st">&quot;_TotalA&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
-<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Hashtag counts</span></span>
-<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 8 hashtag sequences</span></span>
-<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>  hashes <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;hashtag&quot;</span>, <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">8</span>))</span>
-<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (sample <span class="sc">%in%</span> samples_pooled) {</span>
-<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>    df_hash <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(<span class="st">&quot;data_dogma_hiv&quot;</span>,</span>
-<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;GSE299348&quot;</span>, sample,</span>
-<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;ADT&quot;</span>, <span class="st">&quot;hashing_info.txt.gz&quot;</span>),</span>
-<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">&quot;:&quot;</span>,</span>
-<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>                        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;hash&quot;</span>, <span class="st">&quot;patient&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Fix capitalization and whitespace</span></span>
-<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">hash =</span> <span class="fu">str_replace</span>(hash, <span class="st">&quot;H&quot;</span>, <span class="st">&quot;h&quot;</span>),</span>
-<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>             <span class="at">hash =</span> <span class="fu">str_replace</span>(hash, <span class="st">&quot; &quot;</span>, <span class="st">&quot;&quot;</span>))</span>
-<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Hashtag matrix</span></span>
-<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>    counts_hash <span class="ot">&lt;-</span> counts_anitbody[df_hash<span class="sc">$</span>hash, <span class="fu">Cells</span>(seurat), drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>    seurat[[<span class="st">&quot;HTO&quot;</span>]] <span class="ot">&lt;-</span> <span class="fu">CreateAssayObject</span>(<span class="at">counts =</span> counts_hash)</span>
-<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Protein counts</span></span>
-<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>  counts_adt <span class="ot">&lt;-</span> counts_anitbody[<span class="sc">!</span><span class="fu">rownames</span>(counts_anitbody) <span class="sc">%in%</span> hashes, <span class="fu">Cells</span>(seurat)]</span>
-<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>  seurat[[<span class="st">&quot;ADT&quot;</span>]] <span class="ot">&lt;-</span> <span class="fu">CreateAssayObject</span>(<span class="at">counts =</span> counts_adt)</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>  <span class="do">### RNA expression</span></span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>  counts_gex <span class="ot">&lt;-</span> counts[[<span class="st">&quot;Gene Expression&quot;</span>]]</span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>  counts_gex <span class="ot">&lt;-</span> counts_gex[, cells]</span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Create seurat object</span></span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>  seurat <span class="ot">&lt;-</span> <span class="fu">CreateSeuratObject</span>(</span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> counts_gex,</span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">assay =</span> <span class="st">&quot;RNA&quot;</span>,</span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>    <span class="at">project =</span> sample)</span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>  seurat<span class="sc">$</span>patient <span class="ot">&lt;-</span> patient</span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>  seurat<span class="sc">$</span>hiv_status <span class="ot">&lt;-</span> hiv_status</span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>  <span class="do">### ADT and hashtags</span></span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>  counts_anitbody <span class="ot">&lt;-</span> counts[[<span class="st">&quot;Antibody Capture&quot;</span>]]</span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>  counts_anitbody <span class="ot">&lt;-</span> counts_anitbody[, cells]</span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Features all have _TotalA appended</span></span>
+<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames</span>(counts_anitbody) <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(<span class="fu">rownames</span>(counts_anitbody), <span class="st">&quot;_TotalA&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Hashtag counts</span></span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 8 hashtag sequences</span></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>  hashes <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;hashtag&quot;</span>, <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">8</span>))</span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (sample <span class="sc">%in%</span> samples_pooled) {</span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>    df_hash <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(<span class="st">&quot;data_dogma_hiv&quot;</span>,</span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;GSE299348&quot;</span>, sample,</span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>                                  <span class="st">&quot;ADT&quot;</span>, <span class="st">&quot;hashing_info.txt.gz&quot;</span>),</span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">&quot;:&quot;</span>,</span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>                        <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;hash&quot;</span>, <span class="st">&quot;patient&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Fix capitalization and whitespace</span></span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">hash =</span> <span class="fu">str_replace</span>(hash, <span class="st">&quot;H&quot;</span>, <span class="st">&quot;h&quot;</span>),</span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>             <span class="at">hash =</span> <span class="fu">str_replace</span>(hash, <span class="st">&quot; &quot;</span>, <span class="st">&quot;&quot;</span>))</span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Hashtag matrix</span></span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>    counts_hash <span class="ot">&lt;-</span> counts_anitbody[df_hash<span class="sc">$</span>hash, <span class="fu">Cells</span>(seurat), drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>    seurat[[<span class="st">&quot;HTO&quot;</span>]] <span class="ot">&lt;-</span> <span class="fu">CreateAssayObject</span>(<span class="at">counts =</span> counts_hash)</span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Demultiplex hashtags</span></span>
-<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (sample <span class="sc">%in%</span> samples_pooled) {</span>
-<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">subset</span>(seurat, nCount_ADT <span class="sc">&gt;</span> <span class="dv">30</span>)</span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Protein counts</span></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>  counts_adt <span class="ot">&lt;-</span> counts_anitbody[<span class="sc">!</span><span class="fu">rownames</span>(counts_anitbody) <span class="sc">%in%</span> hashes, <span class="fu">Cells</span>(seurat)]</span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>  seurat[[<span class="st">&quot;ADT&quot;</span>]] <span class="ot">&lt;-</span> <span class="fu">CreateAssayObject</span>(<span class="at">counts =</span> counts_adt)</span>
 <span id="cb9-153"><a href="#cb9-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CLR HTO normalization</span></span>
-<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">NormalizeData</span>(</span>
-<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>      seurat,</span>
-<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>      <span class="at">assay =</span> <span class="st">&quot;HTO&quot;</span>,</span>
-<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>      <span class="at">normalization.method =</span> <span class="st">&quot;CLR&quot;</span>,</span>
-<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> <span class="dv">2</span>)</span>
-<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a>    <span class="co"># HTO demultiplexing</span></span>
-<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">HTODemux</span>(</span>
-<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a>      seurat,</span>
-<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>      <span class="at">assay =</span> <span class="st">&quot;HTO&quot;</span>,</span>
-<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>      <span class="at">positive.quantile =</span> <span class="fl">0.99</span>,</span>
-<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>      <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove negative and doublets (only keep confident hash)</span></span>
-<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">subset</span>(seurat, <span class="at">subset =</span> hash.ID <span class="sc">%in%</span> df_hash<span class="sc">$</span>hash)</span>
-<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a>    seurat<span class="sc">$</span>patient <span class="ot">&lt;-</span> df_hash<span class="sc">$</span>patient[<span class="fu">match</span>(seurat<span class="sc">$</span>hash.ID, df_hash<span class="sc">$</span>hash)]</span>
-<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn patient column into string</span></span>
-<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>  seurat<span class="sc">$</span>patient <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;patient_&quot;</span>, seurat<span class="sc">$</span>patient)</span>
-<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Store results in list</span></span>
-<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>  list_seurat[[sample]] <span class="ot">&lt;-</span> seurat</span>
-<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a>Now that we have create a Seurat object for each sample, we can now merge all datasets together. We can do this with the <span class="in">`merge()`</span> and <span class="in">`JoinLayers()`</span> function.</span>
-<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: merge_seurat</span></span>
-<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a><span class="do">### Merge all datasets together</span></span>
-<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
-<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> list_seurat[[<span class="dv">1</span>]], </span>
-<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> list_seurat[<span class="dv">2</span><span class="sc">:</span> <span class="fu">length</span>(list_seurat)],</span>
-<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a>  <span class="at">add.cell.ids =</span> <span class="fu">names</span>(list_seurat)</span>
-<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(seurat) <span class="ot">&lt;-</span> <span class="st">&quot;orig.ident&quot;</span></span>
-<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(seurat) <span class="ot">&lt;-</span> <span class="st">&quot;RNA&quot;</span></span>
-<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">JoinLayers</span>(seurat)</span>
-<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a>In the method section of the paper, they also mentioned that they removed cells with &gt; 25% mitochondrial ratio to further clean up the dataset.</span>
-<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: mito_ratio</span></span>
-<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute percent mito ratio</span></span>
-<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a>seurat<span class="sc">$</span>mitoRatio <span class="ot">&lt;-</span> <span class="fu">PercentageFeatureSet</span>(<span class="at">object =</span> seurat, <span class="at">pattern =</span> <span class="st">&quot;^MT-&quot;</span>)</span>
-<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a>seurat<span class="sc">$</span>mitoRatio <span class="ot">&lt;-</span> seurat<span class="sc">@</span>meta.data<span class="sc">$</span>mitoRatio <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">subset</span>(seurat, mitoRatio <span class="sc">&lt;</span> <span class="fl">0.25</span>)</span>
-<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## Processing the Seurat object</span></span>
-<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a>With all the cells loaded, we can begin the standard processing steps. This entails:</span>
+<span id="cb9-154"><a href="#cb9-154" aria-hidden="true" tabindex="-1"></a>  <span class="do">### Demultiplex hashtags</span></span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (sample <span class="sc">%in%</span> samples_pooled) {</span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">subset</span>(seurat, nCount_ADT <span class="sc">&gt;</span> <span class="dv">30</span>)</span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CLR HTO normalization</span></span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">NormalizeData</span>(</span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>      seurat,</span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a>      <span class="at">assay =</span> <span class="st">&quot;HTO&quot;</span>,</span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>      <span class="at">normalization.method =</span> <span class="st">&quot;CLR&quot;</span>,</span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a>      <span class="at">margin =</span> <span class="dv">2</span>)</span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a>    <span class="co"># HTO demultiplexing</span></span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">HTODemux</span>(</span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a>      seurat,</span>
+<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>      <span class="at">assay =</span> <span class="st">&quot;HTO&quot;</span>,</span>
+<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a>      <span class="at">positive.quantile =</span> <span class="fl">0.99</span>,</span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a>      <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove negative and doublets (only keep confident hash)</span></span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>    seurat <span class="ot">&lt;-</span> <span class="fu">subset</span>(seurat, <span class="at">subset =</span> hash.ID <span class="sc">%in%</span> df_hash<span class="sc">$</span>hash)</span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a>    seurat<span class="sc">$</span>patient <span class="ot">&lt;-</span> df_hash<span class="sc">$</span>patient[<span class="fu">match</span>(seurat<span class="sc">$</span>hash.ID, df_hash<span class="sc">$</span>hash)]</span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Turn patient column into string</span></span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a>  seurat<span class="sc">$</span>patient <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;patient_&quot;</span>, seurat<span class="sc">$</span>patient)</span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-180"><a href="#cb9-180" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Store results in list</span></span>
+<span id="cb9-181"><a href="#cb9-181" aria-hidden="true" tabindex="-1"></a>  list_seurat[[sample]] <span class="ot">&lt;-</span> seurat</span>
+<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a>Now that we have create a Seurat object for each sample, we can now merge all datasets together. We can do this with the <span class="in">`merge()`</span> and <span class="in">`JoinLayers()`</span> function.</span>
+<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: merge_seurat</span></span>
+<span id="cb9-192"><a href="#cb9-192" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-193"><a href="#cb9-193" aria-hidden="true" tabindex="-1"></a><span class="do">### Merge all datasets together</span></span>
+<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
+<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> list_seurat[[<span class="dv">1</span>]], </span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> list_seurat[<span class="dv">2</span><span class="sc">:</span> <span class="fu">length</span>(list_seurat)],</span>
+<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a>  <span class="at">add.cell.ids =</span> <span class="fu">names</span>(list_seurat)</span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(seurat) <span class="ot">&lt;-</span> <span class="st">&quot;orig.ident&quot;</span></span>
+<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(seurat) <span class="ot">&lt;-</span> <span class="st">&quot;RNA&quot;</span></span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">JoinLayers</span>(seurat)</span>
+<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a>In the method section of the paper, they also mentioned that they removed cells with &gt; 25% mitochondrial ratio to further clean up the dataset.</span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: mito_ratio</span></span>
+<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute percent mito ratio</span></span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a>seurat<span class="sc">$</span>mitoRatio <span class="ot">&lt;-</span> <span class="fu">PercentageFeatureSet</span>(<span class="at">object =</span> seurat, <span class="at">pattern =</span> <span class="st">&quot;^MT-&quot;</span>)</span>
+<span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a>seurat<span class="sc">$</span>mitoRatio <span class="ot">&lt;-</span> seurat<span class="sc">@</span>meta.data<span class="sc">$</span>mitoRatio <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">subset</span>(seurat, mitoRatio <span class="sc">&lt;</span> <span class="fl">0.25</span>)</span>
+<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Normalization</span>
-<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Variable feature selection</span>
-<span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Scaling counts and running PCA</span>
-<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Assessing batch effect and running <span class="in">`Harmony`</span> to integrate samples</span>
-<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>UMAP</span>
-<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Shared nearest neighbors</span>
-<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Clustering</span>
-<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: process_rna</span></span>
-<span id="cb9-230"><a href="#cb9-230" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb9-231"><a href="#cb9-231" aria-hidden="true" tabindex="-1"></a><span class="do">### Process RNA</span></span>
-<span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(seurat) <span class="ot">&lt;-</span> <span class="st">&quot;RNA&quot;</span></span>
-<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">NormalizeData</span>(seurat)</span>
-<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(seurat, <span class="at">nfeatures =</span> <span class="dv">2000</span>)</span>
-<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">ScaleData</span>(seurat)</span>
-<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(seurat, <span class="at">npcs =</span> <span class="dv">50</span>, <span class="at">reduction.name =</span> <span class="st">&quot;pca_rna&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">RunHarmony</span>(seurat, <span class="at">group.by.vars =</span> <span class="st">&quot;orig.ident&quot;</span>,</span>
-<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a>                     <span class="at">reduction.use =</span> <span class="st">&quot;pca_rna&quot;</span>, <span class="at">dims.use =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
-<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a>                     <span class="at">reduction.save =</span> <span class="st">&quot;harmony_rna&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">RunUMAP</span>(seurat, <span class="at">reduction =</span> <span class="st">&quot;harmony_rna&quot;</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
-<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a>                  <span class="at">reduction.name =</span> <span class="st">&quot;umap_rna&quot;</span>, <span class="at">reduction.key =</span> <span class="st">&quot;rnaUMAP_&quot;</span>,</span>
-<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a>                  <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(seurat, <span class="at">reduction =</span> <span class="st">&quot;harmony_rna&quot;</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
-<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>                        <span class="at">graph.name =</span> <span class="fu">c</span>(<span class="st">&quot;nn_rna&quot;</span>, <span class="st">&quot;snn_rna&quot;</span>), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">FindClusters</span>(seurat, <span class="at">graph.name =</span> <span class="st">&quot;snn_rna&quot;</span>, <span class="at">resolution =</span> <span class="fl">0.8</span>,</span>
-<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster.name =</span> <span class="st">&quot;clusters_rna&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a><span class="fu">### UMAP visualizations</span></span>
-<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a>This takes us to the point of where we can load in our Seurat object:</span>
+<span id="cb9-218"><a href="#cb9-218" aria-hidden="true" tabindex="-1"></a><span class="fu">## Processing the Seurat object</span></span>
+<span id="cb9-219"><a href="#cb9-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-220"><a href="#cb9-220" aria-hidden="true" tabindex="-1"></a>With all the cells loaded, we can begin the standard processing steps. This entails:</span>
+<span id="cb9-221"><a href="#cb9-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-222"><a href="#cb9-222" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Normalization</span>
+<span id="cb9-223"><a href="#cb9-223" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Variable feature selection</span>
+<span id="cb9-224"><a href="#cb9-224" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Scaling counts and running PCA</span>
+<span id="cb9-225"><a href="#cb9-225" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Assessing batch effect and running <span class="in">`Harmony`</span> to integrate samples</span>
+<span id="cb9-226"><a href="#cb9-226" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>UMAP</span>
+<span id="cb9-227"><a href="#cb9-227" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Shared nearest neighbors</span>
+<span id="cb9-228"><a href="#cb9-228" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Clustering</span>
+<span id="cb9-229"><a href="#cb9-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-232"><a href="#cb9-232" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-233"><a href="#cb9-233" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: process_rna</span></span>
+<span id="cb9-234"><a href="#cb9-234" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb9-235"><a href="#cb9-235" aria-hidden="true" tabindex="-1"></a><span class="do">### Process RNA</span></span>
+<span id="cb9-236"><a href="#cb9-236" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(seurat) <span class="ot">&lt;-</span> <span class="st">&quot;RNA&quot;</span></span>
+<span id="cb9-237"><a href="#cb9-237" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">NormalizeData</span>(seurat)</span>
+<span id="cb9-238"><a href="#cb9-238" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(seurat, <span class="at">nfeatures =</span> <span class="dv">2000</span>)</span>
+<span id="cb9-239"><a href="#cb9-239" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">ScaleData</span>(seurat)</span>
+<span id="cb9-240"><a href="#cb9-240" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(seurat, <span class="at">npcs =</span> <span class="dv">50</span>, <span class="at">reduction.name =</span> <span class="st">&quot;pca_rna&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-241"><a href="#cb9-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-242"><a href="#cb9-242" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">RunHarmony</span>(seurat, <span class="at">group.by.vars =</span> <span class="st">&quot;orig.ident&quot;</span>,</span>
+<span id="cb9-243"><a href="#cb9-243" aria-hidden="true" tabindex="-1"></a>                     <span class="at">reduction.use =</span> <span class="st">&quot;pca_rna&quot;</span>, <span class="at">dims.use =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
+<span id="cb9-244"><a href="#cb9-244" aria-hidden="true" tabindex="-1"></a>                     <span class="at">reduction.save =</span> <span class="st">&quot;harmony_rna&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-245"><a href="#cb9-245" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">RunUMAP</span>(seurat, <span class="at">reduction =</span> <span class="st">&quot;harmony_rna&quot;</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
+<span id="cb9-246"><a href="#cb9-246" aria-hidden="true" tabindex="-1"></a>                  <span class="at">reduction.name =</span> <span class="st">&quot;umap_rna&quot;</span>, <span class="at">reduction.key =</span> <span class="st">&quot;rnaUMAP_&quot;</span>,</span>
+<span id="cb9-247"><a href="#cb9-247" aria-hidden="true" tabindex="-1"></a>                  <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-248"><a href="#cb9-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-249"><a href="#cb9-249" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(seurat, <span class="at">reduction =</span> <span class="st">&quot;harmony_rna&quot;</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,</span>
+<span id="cb9-250"><a href="#cb9-250" aria-hidden="true" tabindex="-1"></a>                        <span class="at">graph.name =</span> <span class="fu">c</span>(<span class="st">&quot;nn_rna&quot;</span>, <span class="st">&quot;snn_rna&quot;</span>), <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-251"><a href="#cb9-251" aria-hidden="true" tabindex="-1"></a>seurat <span class="ot">&lt;-</span> <span class="fu">FindClusters</span>(seurat, <span class="at">graph.name =</span> <span class="st">&quot;snn_rna&quot;</span>, <span class="at">resolution =</span> <span class="fl">0.8</span>,</span>
+<span id="cb9-252"><a href="#cb9-252" aria-hidden="true" tabindex="-1"></a>                       <span class="at">cluster.name =</span> <span class="st">&quot;clusters_rna&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-253"><a href="#cb9-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb9-254"><a href="#cb9-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_dataset</span></span>
-<span id="cb9-259"><a href="#cb9-259" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries and data</span></span>
-<span id="cb9-260"><a href="#cb9-260" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
-<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a>seurat_demux <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;data/processed_seurat_objects/seurat_demux.RDS&quot;</span>)</span>
-<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-266"><a href="#cb9-266" aria-hidden="true" tabindex="-1"></a>The UMAP coordinates were computed on the harmony corrected latent space, which we can visualize here to give a quick overview of if the integration was succesful.</span>
-<span id="cb9-267"><a href="#cb9-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-umap_rna_sample</span></span>
-<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: UMAP of the Harmony-integrated RNA expression, colored by sample.</span></span>
-<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(seurat_demux,</span>
-<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a>        <span class="at">group.by =</span> <span class="st">&quot;orig.ident&quot;</span>,</span>
-<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a>        <span class="at">reduction =</span> <span class="st">&quot;umap_rna&quot;</span>)</span>
-<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-278"><a href="#cb9-278" aria-hidden="true" tabindex="-1"></a>We additionally clustered the cells at a resolution of <span class="in">`0.8`</span></span>
-<span id="cb9-279"><a href="#cb9-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-282"><a href="#cb9-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb9-283"><a href="#cb9-283" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-umap_rna_clusters</span></span>
-<span id="cb9-284"><a href="#cb9-284" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: UMAP of the Harmony-integrated RNA expression, colored by clusters at a resolution of 0.8.</span></span>
-<span id="cb9-285"><a href="#cb9-285" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(seurat_demux,</span>
-<span id="cb9-286"><a href="#cb9-286" aria-hidden="true" tabindex="-1"></a>        <span class="at">group.by =</span> <span class="st">&quot;snn_rna_res.0.8&quot;</span>,</span>
-<span id="cb9-287"><a href="#cb9-287" aria-hidden="true" tabindex="-1"></a>        <span class="at">reduction =</span> <span class="st">&quot;umap_rna&quot;</span>,</span>
-<span id="cb9-288"><a href="#cb9-288" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-289"><a href="#cb9-289" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb9-290"><a href="#cb9-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-291"><a href="#cb9-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-292"><a href="#cb9-292" aria-hidden="true" tabindex="-1"></a>***</span>
-<span id="cb9-293"><a href="#cb9-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-294"><a href="#cb9-294" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Next Lesson &gt;&gt;</span><span class="co">](tmp.qmd)</span></span>
+<span id="cb9-255"><a href="#cb9-255" aria-hidden="true" tabindex="-1"></a><span class="fu">### UMAP visualizations</span></span>
+<span id="cb9-256"><a href="#cb9-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-257"><a href="#cb9-257" aria-hidden="true" tabindex="-1"></a>This takes us to the point of where we can load in our Seurat object:</span>
+<span id="cb9-258"><a href="#cb9-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-261"><a href="#cb9-261" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-262"><a href="#cb9-262" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load_dataset</span></span>
+<span id="cb9-263"><a href="#cb9-263" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries and data</span></span>
+<span id="cb9-264"><a href="#cb9-264" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
+<span id="cb9-265"><a href="#cb9-265" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb9-266"><a href="#cb9-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-267"><a href="#cb9-267" aria-hidden="true" tabindex="-1"></a>seurat_demux <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;data/processed_seurat_objects/seurat_demux.RDS&quot;</span>)</span>
+<span id="cb9-268"><a href="#cb9-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-269"><a href="#cb9-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a>The UMAP coordinates were computed on the harmony corrected latent space, which we can visualize here to give a quick overview of if the integration was succesful.</span>
+<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-umap_rna_sample</span></span>
+<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: UMAP of the Harmony-integrated RNA expression, colored by sample.</span></span>
+<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(seurat_demux,</span>
+<span id="cb9-278"><a href="#cb9-278" aria-hidden="true" tabindex="-1"></a>        <span class="at">group.by =</span> <span class="st">&quot;orig.ident&quot;</span>,</span>
+<span id="cb9-279"><a href="#cb9-279" aria-hidden="true" tabindex="-1"></a>        <span class="at">reduction =</span> <span class="st">&quot;umap_rna&quot;</span>)</span>
+<span id="cb9-280"><a href="#cb9-280" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-281"><a href="#cb9-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-282"><a href="#cb9-282" aria-hidden="true" tabindex="-1"></a>We additionally clustered the cells at a resolution of <span class="in">`0.8`</span></span>
+<span id="cb9-283"><a href="#cb9-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-286"><a href="#cb9-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-287"><a href="#cb9-287" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-umap_rna_clusters</span></span>
+<span id="cb9-288"><a href="#cb9-288" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: UMAP of the Harmony-integrated RNA expression, colored by clusters at a resolution of 0.8.</span></span>
+<span id="cb9-289"><a href="#cb9-289" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(seurat_demux,</span>
+<span id="cb9-290"><a href="#cb9-290" aria-hidden="true" tabindex="-1"></a>        <span class="at">group.by =</span> <span class="st">&quot;snn_rna_res.0.8&quot;</span>,</span>
+<span id="cb9-291"><a href="#cb9-291" aria-hidden="true" tabindex="-1"></a>        <span class="at">reduction =</span> <span class="st">&quot;umap_rna&quot;</span>,</span>
+<span id="cb9-292"><a href="#cb9-292" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-293"><a href="#cb9-293" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-294"><a href="#cb9-294" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-295"><a href="#cb9-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-296"><a href="#cb9-296" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Back to Schedule</span><span class="co">](../schedule/schedule.qmd)</span></span>
+<span id="cb9-296"><a href="#cb9-296" aria-hidden="true" tabindex="-1"></a>***</span>
+<span id="cb9-297"><a href="#cb9-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-298"><a href="#cb9-298" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Back to Lesson &gt;&gt;</span><span class="co">](03_demultiplexing.qmd)</span></span>
+<span id="cb9-299"><a href="#cb9-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-300"><a href="#cb9-300" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Back to Schedule</span><span class="co">](../schedule/schedule.qmd)</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

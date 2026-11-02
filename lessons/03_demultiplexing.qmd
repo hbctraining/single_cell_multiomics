@@ -1,23 +1,27 @@
 ---
 title: "Loading the Data and Demultiplexing"
 description: |
-  Write a description of the lesson here. 
+  Loads Cell Ranger RNA and antibody capture counts into a Seurat object, separating hashtag oligos (HTO) and antibody-derived tags (ADT) into their own assays. Filters empty droplets, normalizes HTO counts with CLR, and uses HTODemux to assign cells to donors and remove doublets and negatives.
 author:
   - Noor Sohail
   - author_2
 date: "2026-10-27"
 categories: 
-  - category_1
-  - category_2
-  - category_3
-  - category_4
+  - Demultiplexing
+  - Quality control
+  - Seurat
+  - Protein (HTO/ADT)
 keywords:
-  - keyword_1
-  - keyword_2
-  - keyword_3
-  - keyword_4
-  - keyword_5
-  - keyword_6
+  - cell hashing demultiplexing
+  - HTODemux Seurat
+  - hashtag oligos (HTO)
+  - antibody-derived tags (ADT)
+  - CITE-seq Seurat tutorial
+  - Read10X antibody capture
+  - CLR normalization
+  - single-cell doublet removal
+  - Cell Ranger multi Seurat
+  - demultiplex pooled samples single-cell
 license: "CC-BY-4.0"
 editor_options: 
   markdown: 
@@ -40,15 +44,16 @@ options(scipen = 999)
 df_meta <- read_tsv("data/samples.tsv")
 ```
 
-Approximate time: 70 minutes
+Approximate time: 60 minutes
 
 ## Learning objectives 
 
 In this lesson, we will:
 
-- Learning Objective 1
-- Learning Objective 2
-- Learning Objective 3
+- Load Cell Ranger RNA and antibody capture counts into a Seurat object
+- Separate hashtag (HTO) and protein (ADT) counts into their own assays
+- Filter empty droplets and demultiplex pooled samples with `HTODemux()`
+- Remove doublets and negative cells, and assign each cell to its patient
 
 ## Overview of lesson
 
@@ -486,6 +491,6 @@ ggplot(seurat_demux@meta.data) +
 
 ***
 
-[Next Lesson >>](tmp.qmd)
+[Next Lesson >>](04_protein.qmd)
 
 [Back to Schedule](../schedule/schedule.qmd)

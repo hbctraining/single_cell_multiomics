@@ -1,17 +1,27 @@
 ---
 title: "Single-cell Multiomics"
 description: |
-  Write a description of the lesson here. 
+  Introduces single-cell multiomics and protocols such as ASAP-seq and TEA-seq that capture RNA, chromatin accessibility, and surface protein from the same cell. Compares the strengths, limitations, and common downstream applications of scRNA-seq, scATAC-seq, and antibody-derived tag (ADT) data to help you choose the right modalities for an experiment.
 author:
   - Noor Sohail
 date: "2026-10-27"
 categories: 
-  - single-cell
-  - ATAC-seq
-  - RNA-seq
-  - Protein
+  - Single-cell multiomics
+  - Experimental design
+  - scRNA-seq
+  - scATAC-seq
+  - Surface protein (ADT)
 keywords:
-  - Multiomics
+  - single-cell multiomics
+  - multimodal single-cell analysis
+  - scRNA-seq vs scATAC-seq
+  - CITE-seq
+  - antibody-derived tags (ADT)
+  - ASAP-seq
+  - TEA-seq
+  - chromatin accessibility
+  - single-cell proteomics
+  - single-cell multiomics tutorial
 license: "CC-BY-4.0"
 editor_options: 
   markdown: 
@@ -25,14 +35,14 @@ editor_options:
 
 ```
 
-Approximate time: 25 minutes
+Approximate time: 15 minutes
 
 ## Learning objectives 
 
 In this lesson, we will:
 
 - Discuss the pros and cons of different single-cell modalities
-- Describe the overaching experimenal concept
+- Describe the overarching experimental concept
 - List common analyses that can be accomplished with multiomics
 
 ## Overview of lesson

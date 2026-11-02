@@ -3,22 +3,28 @@ sidebar: false
 toc: false
 ---
 
-# Workshop_title
+# Single-cell Multiomics in R: Integrating RNA, Chromatin Accessibility, and Protein
 
-| Audience | Computational skills required| Duration |
+| Audience | Computational skills required | Duration |
 :----------|:----------|:----------|
-| Biologists | [Workshop pre-requisite]() | 4-session online workshop (8 hours of trainer-led time)|
+| Biologists | [Introduction to R](https://hbctraining.github.io/Intro-to-R-flipped/) | 3-session online workshop (~9 hours of trainer-led time) |
 
 ### Description
 
-This repository has teaching materials for a hands-on workshop on **Workshop Name**. Description of workshop. 
+This repository has teaching materials for a hands-on workshop on **single-cell multiomics analysis in R**. Single-cell multiomics experiments measure gene expression, chromatin accessibility, and surface proteins in the same cell, giving a far more complete picture of cell identity and gene regulation than any single assay can. Designed for wet lab scientists, this workshop walks through each modality using a real human gut tissue dataset, from raw counts to annotated cell types and analyses that combine all three. You will leave able to plan multiomics experiments with the analysis in mind, explore and interpret your own data, and have more productive conversations with bioinformaticians.
 
-::: calout-note
-# Note for Trainers:
-Please note that the schedule linked below assumes that learners will spend between 3-5 hours on reading through and completing exercises from selected lessons between classes. The online component of the workshop focuses on more exercises and discussion/Q & A.
-:::
+The workshop is organized into three parts, each taught in its own session:
+
+1. **Protein:** Load the data, demultiplex pooled samples with hashtag oligos, and analyze surface protein (ADT) expression alongside RNA to annotate cell types.
+2. **Chromatin accessibility (ATAC):** Process and explore single-cell ATAC-seq data to profile the epigenome of each cell.
+3. **Regulatory and joint analyses:** Bring RNA, ATAC, and protein together to identify cell states and the regulatory programs that drive them.
+
+We do not cover the upstream processing of scRNA-seq data in depth. If you are new to single-cell analysis, we recommend reviewing our [Introduction to scRNA-seq](https://hbctraining.github.io/Intro-to-scRNAseq/) workshop materials first.
 
 ::: callout-note
+# Length of workshop
+This workshop is taught as three 3-hour sessions, one for each part. Each part builds on the results of the previous one, so we recommend attending all three sessions in order.
+
 These materials were developed for a trainer-led workshop, but are also amenable to self-guided learning.
 :::
 
@@ -26,25 +32,23 @@ These materials were developed for a trainer-led workshop, but are also amenable
 
 In this workshop, the participants will:
 
-- Broad Learning Objective 1
-- Broad Learning Objective 2
-- Broad Learning Objective 3
-- Broad Learning Objective 4
+- Describe what single-cell multiomics measures and how to choose the right modalities for an experiment
+- Load Cell Ranger output into Seurat and demultiplex pooled samples using hashtag oligos (HTO)
+- **Part 1: Protein**
+  - Normalize, visualize, and integrate surface protein (ADT) data
+  - Annotate cell types using RNA and protein markers together
+- **Part 2: Chromatin accessibility**
+  - Perform quality control and dimensionality reduction on single-cell ATAC-seq data
+  - Explore chromatin accessibility across cell types
+- **Part 3: Regulatory and joint analyses**
+  - Combine RNA, ATAC, and protein into a joint representation of each cell
+  - Link accessible regions to genes and infer transcription factor activity
 
 ### Lessons
-* [Workshop schedule (trainer-led learning)](schedule/schedule.qmd)
-* [Self-learning](schedule/self-learning.qmd)
+- [Workshop schedule (trainer-led learning)](schedule/schedule.qmd)
+- [Self-learning](schedule/self-learning.qmd)
 
-### Installation Requirements (shell-based)
-***All:***
-
-***Mac users:***
-No additional installation requirements.  
-
-***Windows users:***
-[GitBash](https://git-scm.com/download/win)  
-
-### Installation Requirements (R-based)
+### Installation Requirements
 
 #### Applications
 Download the most recent versions of R and RStudio for your laptop:
@@ -54,67 +58,44 @@ Download the most recent versions of R and RStudio for your laptop:
 
 #### Packages for R
 
-> **Note 1: Install the packages in the order listed below.**
+::: callout-note
+# Instructions for installing R packages
 
-> **Note 2:  All the package names listed below are case sensitive!**
+1. **Install the packages in the order listed below.**
+2. **All the package names listed below are case sensitive!**
+3. **If you have a Mac,** download and install this tool before installing your packages if using R versions 4.3.0 up to 4.4.3: [gfortran-12.2](https://mac.r-project.org/tools/gfortran-12.2-universal.pkg). If you are using R versions after 4.4.3, install [gfortran-14.2](https://mac.r-project.org/tools/gfortran-14.2-universal.pkg) instead.
+4. At any point (especially if you've used R/Bioconductor in the past), in the console **R may ask you if you want to update any old packages by asking Update all/some/none? [a/s/n]:**. If you see this, **type "a" at the prompt and hit Enter** to update any old packages. _Updating packages can sometimes take quite a bit of time to run, so please account for that before you start with these installations._
+5. If you see a message in your console along the lines of "binary version available but the source version is later", followed by a question, **"Do you want to install from sources the package which needs compilation? y/n", type n for no, and hit enter**.
+:::
 
-> **Note 3**: **If you have a Mac,** download and install this tool before installing your packages if using R versions 4.3.0 up to 4.4.3:
-https://mac.r-project.org/tools/gfortran-12.2-universal.pkg
-And this tool if using R versions after 4.4.3:
-https://mac.r-project.org/tools/gfortran-14.2-universal.pkg
-
-> **Note 4**: At any point (especially if you’ve used R/Bioconductor in the past), in the console **R may ask you if you want to update any old packages by asking Update all/some/none? [a/s/n]:**. If you see this, **type "a" at the prompt and hit Enter** to update any old packages. _Updating packages can sometimes take quite a bit of time to run, so please account for that before you start with these installations._  
-
-> **Note 5:** If you see a message in your console along the lines of “binary version available but the source version is later”, followed by a question, **“Do you want to install from sources the package which needs compilation? y/n”, type n for no, and hit enter**.
-
-**(1)** Install the X packages listed below from **CRAN** using the `install.packages()` function. 
-
-1. BiocManager
-2. ..
-3. ...
-
-**Please install them one-by-one as follows:**
+**(1)** Install the packages listed below, **one at a time**, in the order shown.
 
 ```{r}
-#| label: install_CRAN_packages
+#| label: install_packages
 #| eval: false
-install.packages("BiocManager")
-install.packages("package_name")
-install.packages("package_name")
+# Day 1: Protein (ADT) packages
+install.packages("tidyverse")
+install.packages("Seurat")
+install.packages("harmony")
 ```
 
-**(2)** Install the X packages listed below from **Bioconductor** using the the `BiocManager::install()` function.
-
-1. ..
-2. ..
-
-**Please install them one-by-one as follows:**
-
-```{r}
-#| label: install_bioconductor_packages
-#| eval: false
-BiocManager::install("package_name")
-BiocManager::install("package_name")
-BiocManager::install("package_name")
-```
-
-**(3)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.  
+**(2)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.
 
 ```{r}
 #| label: load_libraries
 #| eval: false
-library(package_name)
-library(package_name)
-library(package_name)
-library(package_name)
-library(package_name)
-library(package_name)
+library(tidyverse)
+library(Seurat)
+library(harmony)
 ```
 
-**(4)** Once all packages have been loaded, run sessionInfo().  
+### Citation
 
-```{r}
-#| label: print_sessionInfo
-#| eval: false
-sessionInfo()
-```
+To cite material from this course in your publications, please use:
+
+::: callout-important
+# Citation
+TODO: [Create Zenodo citation]()
+:::
+
+A lot of time and effort went into the preparation of these materials. Citations help us understand the needs of the community, gain recognition for our work, and attract further funding to support our teaching activities. Thank you for citing this material if it helped you in your data analysis.
