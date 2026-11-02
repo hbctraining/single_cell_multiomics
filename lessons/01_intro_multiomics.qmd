@@ -25,7 +25,7 @@ editor_options:
 
 ```
 
-Approximate time: XX minutes
+Approximate time: 25 minutes
 
 ## Learning objectives 
 
@@ -80,6 +80,6 @@ https://www.nature.com/articles/s41576-023-00586-w
 
 ***
 
-[Next Lesson >>](tmp.qmd)
+[Next Lesson >>](02_dataset.qmd)
 
 [Back to Schedule](../schedule/schedule.qmd)

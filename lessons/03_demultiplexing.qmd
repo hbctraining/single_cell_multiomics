@@ -33,15 +33,14 @@ library(Seurat)
 
 # Set seed
 set.seed(123456789L)
+# Turn off scientific notation
+options(scipen = 999)
 
 # Load sample metadata
 df_meta <- read_tsv("data/samples.tsv")
-
-# Turn off scientific notation
-options(scipen = 999)
 ```
 
-Approximate time: XX minutes
+Approximate time: 70 minutes
 
 ## Learning objectives 
 
@@ -108,7 +107,7 @@ Now we can see that we have created a Seurat object with `r ncol(seurat)` cells 
 counts_adt <- counts[["Antibody Capture"]]
 ```
 
-We can take a look at all the proteins included in our experiment by looking at the rownames of our counts matrix. In particular we are looking for any "protein" that begins with `hashtag`. Some runs are comprised of multiple, pooled samples. The way to identify which sample a cell comes from is to use these sequences to **demultiplex**. The first thing we are going to do here is pull out those antibodies and match them.
+We can take a look at all the proteins included in our experiment by looking at the rownames of our counts matrix. In particular we are looking for any "protein" that begins with `hashtag`. Some runs are comprised of [multiple, pooled samples that are tagged with specific antibodies](https://link.springer.com/article/10.1186/s13059-018-1603-1). The way to identify which sample a cell comes from is to use these sequences to **demultiplex**. The first thing we are going to do here is pull out those antibodies and match them.
 
 ```{r}
 #| label: hash_metadata
@@ -163,11 +162,10 @@ hashes
 ```
 
 ::: callout-note
-# More hashes than in dataframe
+# More hashes than expected
+In the metadata, we see that there should only be 3 hashes, but we have 8 in our matrix. This is because the sequence for multiple hashes was included in the reference and does not effect the future results. 
 
-TODO
-
-In the metadata, we see that there should only be 3 hashes, but we have 8 in our matrix. This is because the sequence for multiple hashes was included in the reference and does not effect the future results.
+So we will remove the irrelevant hashes from our counts matrix.
 :::
 
 Now that we have the names for each hash, we can pull those antibody captures out and store it as `HTO` in our Seurat object with the `CreateAssayObject()` function.
@@ -175,7 +173,7 @@ Now that we have the names for each hash, we can pull those antibody captures ou
 ```{r}
 #| label: hto_assay
 # Grab counts for just the hashes
-counts_hash <- counts_adt[hashes, ]
+counts_hash <- counts_adt[df_hash$hash, ]
 
 # Add HTO assay to our seurat object
 seurat[["HTO"]] <- CreateAssayObject(counts = counts_hash)
@@ -190,7 +188,7 @@ To confirm that we added the `HTO` assay succesfully, we can check that the are 
 Features(seurat[["HTO"]])
 ```
 
-## Protein expression
+### Protein expression
 
 Now that we have identified the hashes, we can proceed by adding the protein expression to our Seurat object. 
 
@@ -236,12 +234,13 @@ seurat@meta.data %>% head() %>% knitr::kable()
 
 ### Filtration
 
-At this point it is quite evident that we have a lot of low quality cells or empty droplets. So to begin
+At this point it is quite evident that we have a lot of low quality cells or empty droplets. To improve the process of demultiplexing and reduce the number of computations 
 
 First, we can take a look at the number of total counts associated with each cell to remove cells that have too few counts for the antibody to cleanly assign a sample identity. 
 
 ```{r}
-#| label: nCount_HTO
+#| label: fig-nCount_HTO
+#| fig-cap: Histogram of hash counts per cell.
 #| fig-width: 9
 ggplot(seurat@meta.data) +
   geom_histogram(aes(x = nCount_HTO),
@@ -250,16 +249,18 @@ ggplot(seurat@meta.data) +
   scale_y_log10() +
   scale_x_log10() +
   theme_bw() + NoLegend() +
-  geom_vline(xintercept = 11)
+  geom_vline(xintercept = 30)
 ```
 
-The black line is drawn at `nCount_HTO = 11` to show the threshold we will be using to remove empty droplets. We will additionally remove cells that contain zero RNA expression
+The black line is drawn at `nCount_HTO = 30` to show the threshold we will be using to remove empty droplets. Following the methods section from the [Methods section of the paper](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0), we will also remove RNA UMI counts ≤ 500 or ≥ 10,000.
 
 ```{r}
 #| label: filter
 # Filter based on HTO counts
-seurat <- subset(seurat, nCount_HTO > 11)
-seurat <- subset(seurat, nCount_RNA > 0)
+seurat <- subset(seurat, nCount_HTO > 30)
+# Filter based on RNA counts
+seurat <- subset(seurat, nCount_RNA >= 500)
+seurat <- subset(seurat, nCount_RNA <= 10000)
 seurat
 ```
 
@@ -282,27 +283,206 @@ seurat <- NormalizeData(
 seurat
 ```
 
-With these normalized counts, we can start to see if we can clearly identify cells that have high expression of a singular hash. These are the cells that will be mapped to their corresponding 
+With these normalized counts, we can start to see if we can clearly identify cells that have high expression of a singular hash.
+
+### k-medoids demultiplexing
+
+`HTODemux()`: Run k-medoids clustering with `positive.quantile = 0.95` to set a quantile threshold of 95% for a confident demultiplexing call.
+
+::: callout-note
+# TODO
+https://satijalab.org/seurat/articles/hashing_vignette.html
+
+The demultiplexing function HTODemux() implements the following procedure:
+We perform a k-medoid clustering on the normalized HTO values, which initially separates cells into K(# of samples)+1 clusters.
+We calculate a ‘negative’ distribution for HTO. For each HTO, we use the cluster with the lowest average value as the negative group.
+For each HTO, we fit a negative binomial distribution to the negative cluster. We use the 0.99 quantile of this distribution as a threshold.
+Based on these thresholds, each cell is classified as positive or negative for each HTO.
+Cells that are positive for more than one HTOs are annotated as doublets.
+
+:::
+
+::: callout-important
+# figure of k-medoids
+goes here
+:::
+
+```{r}
+#| label: HTODemux
+# HTO demultiplexing
+seurat <- HTODemux(
+    seurat,
+    assay = "HTO",
+    positive.quantile = 0.99,
+    verbose = TRUE)
+```
+
+The results of this function call are stored in our `@meta.data`.
+
+```{r}
+#| label: demux_meta
+#| eval: false
+# Seurat metadata
+seurat@meta.data %>% head()
+```
+
+```{r}
+#| label: tbl-demux_meta
+#| tbl-cap: Metadata after running `HTODemux()` to demultiplex pooled cells.
+#| echo: false
+# Seurat metadata
+seurat@meta.data %>% head() %>% knitr::kable()
+```
+
+`HTODemux` added the last six columns (17–21 in your list, plus `HTO_maxID` at 16):
+
+| Column | What it holds |
+|---|---|
+| `HTO_maxID` | The hashtag with the **highest** normalised signal in that cell, whether or not it passed the threshold. |
+| `HTO_secondID` | The hashtag with the **second-highest** signal. Useful for seeing which two donors a doublet came from. |
+| `HTO_margin` | The difference between the top and second hashtag's normalised (CLR) values. Large means one hashtag clearly dominates; small means the cell is ambiguous. |
+| `HTO_classification` | The detailed call. A singlet gets one hashtag name (`hashtag2`), a doublet gets both joined with `_` (`hashtag1_hashtag3`), and a cell with no hashtag above threshold gets `Negative`. |
+| `HTO_classification.global` | The detailed call collapsed into three groups: `Singlet`, `Doublet` or `Negative`. Filter on this one. |
+| `hash.ID` | The final per-cell label: the hashtag name for singlets, and `Doublet` or `Negative` otherwise. `HTODemux` also sets the object's active identities to this. |
+
+
+From this, we can count how many cells belong to each patient:
+
+```{r}
+#| label: fig-nCells_hash.ID
+#| fig-cap: Number of cells per demultiplexed hash ID.
+#| fig-width: 10
+# Number of cells per demultiplexed hash ID
+ggplot(seurat@meta.data) +
+  geom_bar(aes(x = hash.ID,
+               fill = hash.ID),
+           color = "black") +
+  geom_text(aes(x = hash.ID,
+                label = after_stat(count)),
+          stat = "count", vjust = -0.5,
+          size = 3) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+The majority of our remaining cells are identified as `Negative`, meaning that a conclusive label was unable to be determined from the data. These cells are typically empty or filled with ambient RNA and some hash counts. To evaluate if we truly believe these are low-quality cells to remove, we can assess the `nCount_HTO` to see how many hash counts are present in those cells. If the levels are very low, we will be unable to identify which patient the cell comes from, and therefore remove them.
+
+```{r}
+#| label: fig-nCount_HTO_vln
+#| fig-cap: Distribution of hash counts, grouped by demultipled hash IDs.
+# Distribution of HTO counts per demultiplexed hash ID
+VlnPlot(seurat,
+        features = "nCount_HTO",
+        group.by = "hash.ID",
+        assay = "HTO",
+        pt.size = 0) +
+  scale_y_log10()
+```
+
+We can see why the cells that were called `Negative` received that label from the violin plot. Each cell had very low levels of hash expression, meaning that no algorithm would be able to confidently map the cell to a label.
+
+We can also see patterns of expression for each hash across the identities. We are ideally looking for peaks of zero expression for hashes other than the `hash.ID`, indicating that the cell has high levels of the `hash.ID` hash.
 
 ```{r}
 #| label: fig-hto_ridge
 #| fig-cap: Ridge plot of HTO normalized expression for each hash.
 #| fig-width: 9
+# HTO expression by demultiplexed hash ID
 RidgePlot(
   seurat,
-  hashes,
-  assay = "HTO",
-  same.y.lims = TRUE)
+  features = df_hash$hash,
+  group.by = "hash.ID",
+  assay = "HTO")
 ```
 
-### Subsection 3B
+Which is exactly what we see in the `RidgePlot()`.
 
-:::{.callout-tip}
-# [**Exercise 3**](tmp-Answer_key.qmd#exercise-3)
-1. A question to evaluate Learning Objective 3
-2. A followup question to question #1
-3. ...
+### Removing doublets and negative
+
+Now that we are confident in our demultiplexed calls, we can remove the identified `doublets` and `negative` cells. These will only introduce noise into the dataset so we will remove them from our analysis.
+
+```{r}
+#| label: filter_doublets_negatives
+# Remove doublets and negatives
+seurat_demux <- subset(seurat, subset = (hash.ID %in% df_hash$hash))
+seurat_demux
+```
+
+And now we can take the mapping of `hash` to `patient` and add it to the metadata of our `Seurat` object. This way, moving forward, we are able to associate each cell with a specific patient. We will do a `left_join()` of to merge together this information.
+
+```{r}
+#| label: map_hash_patient
+# Add patient to metadata by matching hash
+meta <- left_join(seurat_demux@meta.data,
+                  df_hash, by = c("hash.ID" = "hash"))
+rownames(meta) <- Cells(seurat_demux)
+
+seurat_demux@meta.data <- meta
+```
+
+Oftentimes when you run `left_join()` of dataframes, you lose the  rownames of the original dataframe. If we were to put this back into the `Seurat` object without the cell barcodes, we would get many errors in future steps. Hence why we explicitly set the `rownames(meta)` as a secondary step.
+
+# Loading processed seurat object
+
+Now that we understand the basics of how demultiplexing works, we can go back to the full dataset which contains all our samples. To save time and computation, we have generated the merged and demultiplexed seurat object for you to load into your R session.
+
+```{r}
+#| label: load_seurat_demux
+# Load the processed seurat object
+seurat_demux <- readRDS("data/processed_seurat_objects/seurat_demux.RDS")
+seurat_demux
+```
+
+For more information on how this object was created, we have created a detailed [lesson](Aside_gen_pooled_seurat.qmd) on how each sample was loaded in an automated fashion with a `for` loop. The `RNA` assay was also processed following a standard scRNA-seq workflow.
+
+::: {.callout-note collapse="true"}
+# RNA processing code
+
+After merging together each sample, these were the following steps that were performed on the `RNA` assay:
+
+```{r}
+#| label: process_rna
+#| eval: false
+### Process RNA
+DefaultAssay(seurat) <- "RNA"
+seurat <- NormalizeData(seurat)
+seurat <- FindVariableFeatures(seurat, nfeatures = 2000)
+seurat <- ScaleData(seurat)
+seurat <- RunPCA(seurat, npcs = 50, reduction.name = "pca_rna", verbose = FALSE)
+
+seurat <- RunHarmony(seurat, group.by.vars = "orig.ident",
+                     reduction.use = "pca_rna", dims.use = 1:30,
+                     reduction.save = "harmony_rna", verbose = FALSE)
+seurat <- RunUMAP(seurat, reduction = "harmony_rna", dims = 1:30,
+                  reduction.name = "umap_rna", reduction.key = "rnaUMAP_",
+                  verbose = FALSE, seed.use = 123456789L)
+
+seurat <- FindNeighbors(seurat, reduction = "harmony_rna", dims = 1:30,
+                        graph.name = c("nn_rna", "snn_rna"))
+seurat <- FindClusters(seurat, graph.name = "snn_rna", resolution = 0.8, 
+                       algorithm = 4, random.seed = 123456789L)
+```
+
 :::
+
+As a starting point to better understand the dataset that we loaded, we can assess how many cells we have per patient.
+
+```{r}
+#| label: fig-nCells_patient
+#| fig-cap: Number of cells per patient in the full dataset.
+#| fig-width: 10
+# Number of cells per patient
+ggplot(seurat_demux@meta.data) +
+  geom_bar(aes(x = patient,
+               fill = hiv_status),
+           color = "black") +
+  geom_text(aes(x = patient,
+                label = after_stat(count)),
+          stat = "count", vjust = -0.5,
+          size = 3) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
 
 ***
 

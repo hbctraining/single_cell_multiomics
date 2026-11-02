@@ -34,9 +34,11 @@ website:
     # contents: auto      # Creates automatic TOC from page headers (no sections)
     contents:
     
-      - section: "Day 1: Protein:"
+      - section: "Day 1: Protein"
         contents:
-          - lessons/intro_multiomics.qmd
+          - lessons/01_intro_multiomics.qmd
+          - lessons/02_dataset.qmd
+          - lessons/03_demultiplexing.qmd
 
 
 format:

@@ -30,7 +30,7 @@ editor_options:
 
 ```
 
-Approximate time: XX minutes
+Approximate time: 35 minutes
 
 ## Learning objectives 
 
@@ -179,6 +179,6 @@ Recall earlier that we discussed that some samples were first tagged with an ant
 
 ***
 
-[Next Lesson >>](tmp.qmd)
+[Next Lesson >>](03_demultiplexing.qmd)
 
 [Back to Schedule](../schedule/schedule.qmd)

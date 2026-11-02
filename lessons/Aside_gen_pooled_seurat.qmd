@@ -1,0 +1,278 @@
+---
+title: "Generating Pooled Seurat Object"
+description: |
+  Write a description of the lesson here. 
+author:
+  - Noor Sohail
+date: "2026-10-31"
+categories: 
+  - category_1
+  - category_2
+  - category_3
+  - category_4
+keywords:
+  - keyword_1
+  - keyword_2
+  - keyword_3
+  - keyword_4
+  - keyword_5
+  - keyword_6
+license: "CC-BY-4.0"
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#| label: load_libraries_data
+#| echo: false
+# Load libraries and data
+```
+
+Approximate time: XX minutes
+
+## Learning objectives 
+
+In this lesson, we will:
+
+- Learning Objective 1
+- Learning Objective 2
+- Learning Objective 3
+
+## Overview of lesson
+
+When doing XYZ...
+
+## Create Seurat object
+
+First, we set up the script so that we can loop through multiple samples with a `for` loop. So we keep track of the sample names and create an empty list where we will store the Seurat objects. Additionally, as some of the datasets are pooled, we will need to run the demultiplexing steps for them in this step, so we create `samples_pooled` to keep track of which samples those are.
+
+```{r}
+#| label: setup_metadata
+#| eval: false
+### Load libraries
+library(tidyverse)
+library(Seurat)
+library(qs)
+library(harmony)
+
+### Metadata
+df_meta <- read.csv("data_dogma_hiv/GSE299348/samples.tsv", sep = "\t")
+rownames(df_meta) <- df_meta$library
+
+### Load every dataset
+# List of seurat object to eventually merge
+list_seurat <- list()
+
+# Note pooled samples to dehash later
+samples_pooled <- c("PT1", "PT2", "PT3")
+```
+
+Next, we loop through each library in our metadata and build one Seurat object per sample. For every sample, the loop:
+
+
+1. **Selects real cells.** We read the `per_barcode_metrics.csv.gz` file from the ATAC output of `cellranger-arc` and keep only the barcodes where `is_cell == 1`. This removes the empty droplets from the raw matrices so that the RNA and protein data contain the same set of cells as the ATAC data.
+2. **Creates the Seurat object.** We load the counts from the `ADT` folder, subset the "Gene Expression" matrix to our cells, and create the `RNA` assay. We also record the `patient` and `hiv_status` from the metadata.
+3. **Separates hashtags from proteins.** The "Antibody Capture" matrix holds both the hashtags and the surface proteins. For pooled samples, we read `hashing_info.txt.gz` and store only the hashtags used in that pool as the `HTO` assay. Every other antibody that is not a hashtag is stored as the `ADT` assay.
+4. **Demultiplexes pooled samples.** For the samples in `samples_pooled`, we remove low-count cells, CLR-normalize the hashtags, and run `HTODemux()`, just as we did for `PT1` in the previous lesson. We keep only the cells confidently assigned to a single hashtag and replace the `patient` column with the patient matched to that hashtag.
+5. **Stores the result.** We prefix the patient IDs with `patient_` so they are read as text rather than numbers, and add the object to `list_seurat` under the sample name.
+
+```{r}
+#| label: load_samples_loop
+#| eval: false
+# Loop through each sample
+for (sample in df_meta$library) {
+  
+  print(sample)
+  patient <- df_meta[sample, "patient"]
+  hiv_status <- df_meta[sample, "hiv_status"]
+  
+  ### Get cells of interest
+  cells <- read.csv(file.path("data_dogma_hiv/",
+                              "GSE299348/", sample, 
+                              "/ATAC/per_barcode_metrics.csv.gz")) %>%
+    subset(is_cell == 1) %>%
+    pull(barcode)
+
+  ### Load counts
+  counts <- Read10X(file.path("data_dogma_hiv",
+                              "GSE299348",
+                              sample,
+                              "ADT"))
+  
+  ### RNA expression
+  counts_gex <- counts[["Gene Expression"]]
+  counts_gex <- counts_gex[, cells]
+  
+  ### Create seurat object
+  seurat <- CreateSeuratObject(
+    counts = counts_gex,
+    assay = "RNA",
+    project = sample)
+  seurat$patient <- patient
+  seurat$hiv_status <- hiv_status
+
+  ### ADT and hashtags
+  counts_anitbody <- counts[["Antibody Capture"]]
+  counts_anitbody <- counts_anitbody[, cells]
+  # Features all have _TotalA appended
+  rownames(counts_anitbody) <- str_replace_all(rownames(counts_anitbody), "_TotalA", "")
+
+
+  ### Hashtag counts
+  # 8 hashtag sequences
+  hashes <- paste0("hashtag", seq(1, 8))
+  if (sample %in% samples_pooled) {
+    df_hash <- read.csv(file.path("data_dogma_hiv",
+                                  "GSE299348", sample,
+                                  "ADT", "hashing_info.txt.gz"),
+                        header = FALSE, sep = ":",
+                        col.names = c("hash", "patient")) %>%
+      # Fix capitalization and whitespace
+      mutate(hash = str_replace(hash, "H", "h"),
+             hash = str_replace(hash, " ", ""))
+
+    # Hashtag matrix
+    counts_hash <- counts_anitbody[df_hash$hash, Cells(seurat), drop = FALSE]
+    seurat[["HTO"]] <- CreateAssayObject(counts = counts_hash)
+  }
+
+  ### Protein counts
+  counts_adt <- counts_anitbody[!rownames(counts_anitbody) %in% hashes, Cells(seurat)]
+  seurat[["ADT"]] <- CreateAssayObject(counts = counts_adt)
+
+  ### Demultiplex hashtags
+  if (sample %in% samples_pooled) {
+    seurat <- subset(seurat, nCount_ADT > 30)
+
+    # CLR HTO normalization
+    seurat <- NormalizeData(
+      seurat,
+      assay = "HTO",
+      normalization.method = "CLR",
+      margin = 2)
+
+    # HTO demultiplexing
+    seurat <- HTODemux(
+      seurat,
+      assay = "HTO",
+      positive.quantile = 0.99,
+      verbose = TRUE)
+
+    # Remove negative and doublets (only keep confident hash)
+    seurat <- subset(seurat, subset = hash.ID %in% df_hash$hash)
+    seurat$patient <- df_hash$patient[match(seurat$hash.ID, df_hash$hash)]
+  }
+
+  # Turn patient column into string
+  seurat$patient <- paste0("patient_", seurat$patient)
+
+  # Store results in list
+  list_seurat[[sample]] <- seurat
+
+}
+```
+
+Now that we have create a Seurat object for each sample, we can now merge all datasets together. We can do this with the `merge()` and `JoinLayers()` function.
+
+```{r}
+#| label: merge_seurat
+#| eval: false
+### Merge all datasets together
+seurat <- merge(
+  x = list_seurat[[1]], 
+  y = list_seurat[2: length(list_seurat)],
+  add.cell.ids = names(list_seurat)
+)
+
+Idents(seurat) <- "orig.ident"
+DefaultAssay(seurat) <- "RNA"
+seurat <- JoinLayers(seurat)
+```
+
+In the method section of the paper, they also mentioned that they removed cells with > 25% mitochondrial ratio to further clean up the dataset.
+
+```{r}
+#| label: mito_ratio
+#| eval: false
+# Compute percent mito ratio
+seurat$mitoRatio <- PercentageFeatureSet(object = seurat, pattern = "^MT-")
+seurat$mitoRatio <- seurat@meta.data$mitoRatio / 100
+seurat <- subset(seurat, mitoRatio < 0.25)
+```
+
+## Processing the Seurat object
+
+With all the cells loaded, we can begin the standard processing steps. This entails:
+
+- Normalization
+- Variable feature selection
+- Scaling counts and running PCA
+- Assessing batch effect and running `Harmony` to integrate samples
+- UMAP
+- Shared nearest neighbors
+- Clustering
+
+```{r}
+#| label: process_rna
+#| eval: false
+### Process RNA
+DefaultAssay(seurat) <- "RNA"
+seurat <- NormalizeData(seurat)
+seurat <- FindVariableFeatures(seurat, nfeatures = 2000)
+seurat <- ScaleData(seurat)
+seurat <- RunPCA(seurat, npcs = 50, reduction.name = "pca_rna", verbose = FALSE)
+
+seurat <- RunHarmony(seurat, group.by.vars = "orig.ident",
+                     reduction.use = "pca_rna", dims.use = 1:30,
+                     reduction.save = "harmony_rna", verbose = FALSE)
+seurat <- RunUMAP(seurat, reduction = "harmony_rna", dims = 1:30,
+                  reduction.name = "umap_rna", reduction.key = "rnaUMAP_",
+                  verbose = FALSE)
+
+seurat <- FindNeighbors(seurat, reduction = "harmony_rna", dims = 1:30,
+                        graph.name = c("nn_rna", "snn_rna"), verbose = FALSE)
+seurat <- FindClusters(seurat, graph.name = "snn_rna", resolution = 0.8,
+                       cluster.name = "clusters_rna", verbose = FALSE)
+```
+
+### UMAP visualizations
+
+This takes us to the point of where we can load in our Seurat object:
+
+```{r}
+#| label: load_dataset
+# Load libraries and data
+library(Seurat)
+library(tidyverse)
+
+seurat_demux <- readRDS("data/processed_seurat_objects/seurat_demux.RDS")
+```
+
+The UMAP coordinates were computed on the harmony corrected latent space, which we can visualize here to give a quick overview of if the integration was succesful.
+
+```{r}
+#| label: fig-umap_rna_sample
+#| fig-cap: UMAP of the Harmony-integrated RNA expression, colored by sample.
+DimPlot(seurat_demux,
+        group.by = "orig.ident",
+        reduction = "umap_rna")
+```
+
+We additionally clustered the cells at a resolution of `0.8`
+
+```{r}
+#| label: fig-umap_rna_clusters
+#| fig-cap: UMAP of the Harmony-integrated RNA expression, colored by clusters at a resolution of 0.8.
+DimPlot(seurat_demux,
+        group.by = "snn_rna_res.0.8",
+        reduction = "umap_rna",
+        label = TRUE)
+```
+
+
+***
+
+[Back to Lesson >>](03_demultiplexing.qmd)
+
+[Back to Schedule](../schedule/schedule.qmd)
