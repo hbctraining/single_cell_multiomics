@@ -6,21 +6,13 @@ author:
   - Noor Sohail
 date: "2026-10-27"
 categories: 
-  - Workshop dataset
-  - Experimental design
-  - Project setup
+  - Single-cell multiomics
+  - DOGMA-seq
   - R
 keywords:
-  - DOGMA-seq
-  - DOGMA-seq dataset
-  - HIV-1 persistence gut
-  - BACH2 HIV
-  - single-cell multiomics dataset
-  - cell hashing
-  - Seurat R tutorial
-  - R project organization
-  - sample metadata single-cell
-  - Wei 2025 Immunity
+  - HIV-1
+  - BACH2
+  - Seurat
 license: "CC-BY-4.0"
 editor_options: 
   markdown: 
@@ -127,7 +119,7 @@ If your RStudio session looks similar to the image above, then you are ready to 
 
 ### New script
 
-Next, open a new Rscript file and start with some comments to indicate what this file is going to contain. Ideally, we will have one script per major step in our analysis. For this first script, we will be loading our data and performing quality control - as indicated in the header.
+Next, open a new Rscript file and start with some comments to indicate what this file is going to contain. Ideally, we will have one script per major step in our analysis. For this first script, we will be loading our data and demultiplexing - as indicated in the header.
 
 Loading your libraries at the top of the script will also allow you to easily keep track of which libraries you are using and to load them all at once in the beginning.
 
@@ -150,8 +142,9 @@ Save the Rscript as `01_demultiplex_hto_and_protein.R` in your main folder. Your
 
 ```{r}
 #| label: full_data_structure
-#| eval: false
-TODO
+#| echo: false
+# Create directory tree
+fs::dir_tree("data/", recurse = 1)
 ```
 
 
@@ -177,9 +170,9 @@ df_meta <- read_tsv("data/samples.tsv")
 df_meta %>% knitr::kable()
 ```
 
-This table is valuable because it gives us some key information about each sample. For example, we can see that we have multiple sequencing runs from the same patient for many of the HIV negative samples. More consequentially, in the `patient` column, we see the label `pooled` for all of the HIV positive samples.
+This table is valuable because it gives us some key information about each sample. For example, we can see that we have multiple sequencing runs from the same patient for many of the HIV negative samples. More consequentially, in the `patient` column, we see the label `pooled` for all of the PLWH samples.
 
-Recall earlier that we discussed that some samples were first tagged with an antibody and then pooled into a singular run. This is a common cost-saving technique used to sequence multiple samples at once. However, in doing so, we must computationally determine which cell comes from which sample by using those hash sequences. This process is called **demultiplexing** which we will discuss more deeply in the next lesson.
+Recall earlier that we discussed that some samples were first tagged with an antibody and then pooled into a singular run. This is a common cost-saving technique used to sequence multiple samples at once. However, in doing so, we must computationally determine which cell comes from which sample by using those hash sequences. This process is called **demultiplexing** which we will discuss more deeply in the next section.
 
 ***
 
