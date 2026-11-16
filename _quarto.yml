@@ -22,7 +22,7 @@ website:
       - text: "HBC"
         href: https://bioinformatics.sph.harvard.edu/
       - text: "GitHub"
-        href: https://github.com/hbctraining/Intro-to-spatial-scRNA-seq/
+        href: https://github.com/hbctraining/single_cell_multiomics
       - text: "Contact us"
         href: mailto:hbctraining@hsph.harvard.edu
   

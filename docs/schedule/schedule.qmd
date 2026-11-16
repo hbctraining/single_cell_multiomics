@@ -5,7 +5,7 @@ toc: false
 ---
 
 
-## Day 1
+## Day 1 - Protein
 
 | Time |  Topic  | Instructor |
 |:-----------:|:----------:|:--------:|

@@ -1,7 +1,7 @@
 ---
 title: "Workshop Dataset"
 description: |
-  Introduces the DOGMA-seq dataset from Wei et al. (2025), which profiles RNA, chromatin accessibility, and surface protein in gut tissue from people living with HIV and HIV-negative donors. Sets up the R project and analysis script, then explores the sample metadata to see why pooled, hashed samples need to be demultiplexed.
+  Introduction to the DOGMA-seq dataset from Wei et al. (2025), which profiles RNA, chromatin accessibility, and surface protein in gut tissue from people living with HIV and HIV-negative donors. To get started, we download and open RStudio to begin our analysis script. We then explore the sample metadata to see why pooled, hashed samples need to be demultiplexed.
 author:
   - Noor Sohail
 date: "2026-10-27"
@@ -38,13 +38,13 @@ In this lesson, we will:
 
 ## Overview of lesson
 
-When doing XYZ...
+Once you have generated data from many modalities, it is time to start figuring out how to best use each modality for your analysis. To this end, we introduce a DOGMA-seq experiment (RNA, ATAC, protein expression) of gut tissue from people living with HIV (PLWH) and HIV-negative donors. We begin by setting up an organized R project and analysis script, then assess the structure of the data available to us by looking at the sample metadata.
 
 ## Mechanisms of HIV-1 persistence in the gut
 
-Throughout this workshop, we will be utilizing a dataset from [Wei et al. (2025)](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0). In this experiment, they ran [DOGMA-seq](https://www.nature.com/articles/s41587-021-00927-2) on gut tissue from healthy samples and people living with HIV (PLWH) being treated with antiretroviral therapy (ART). As a result, they were able to characterize the transcriptome, epigenome, and proteome of HIV-1 infected cells in contrast to healthy cells.
+Throughout this workshop, we will be utilizing a dataset from [Wei et al. (2025)](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0). In this experiment, they ran [DOGMA-seq](https://www.nature.com/articles/s41587-021-00927-2) on gut tissue from HIV-negative donors and people living with HIV (PLWH) being treated with antiretroviral therapy (ART). As a result, they were able to characterize the transcriptome, epigenome, and proteome of HIV-1 infected cells in contrast to uninfected cells.
 
-As a dataset that makes use of hashing (pooled samples), RNA, ATAC, and protein expression, this provides a great learning opportunity to experience how to process each of these modalities (@tbl-modalities).
+Because this dataset includes hashing (pooled samples), RNA, ATAC, and protein expression, it is a great way to learn how each of these modalities is processed (@tbl-modalities).
 
 | Modality | Measures | Used for |
 |----------|----------|----------|
@@ -57,7 +57,7 @@ As a dataset that makes use of hashing (pooled samples), RNA, ATAC, and protein 
 
 ### Key findings
 
-In 2025, [Wei et al.](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0) published results that showcased which factors promoted HIV-1 persistence in the gut. This study identified [_BACH2_](https://www.genecards.org/card/BACH2) as a key factor found in HIV-1 persistent T cells in the gut. The authors were able to identify this link across the transcriptome, epigenome, and proteome by using the DOGMA-seq protocol (@fig-dataset_abstract).
+[Wei et al. (2025)](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0) published results that showcased which factors promoted HIV-1 persistence in the gut. This study identified [_BACH2_](https://www.genecards.org/card/BACH2) as a key factor found in HIV-1 persistent T cells in the gut. The authors were able to identify this link across the transcriptome, epigenome, and proteome by using the DOGMA-seq protocol (@fig-dataset_abstract).
 
 ::: {#fig-dataset_abstract .figure}
 ![](../img/02_dataset_abstract.jpg){width=500}
@@ -66,11 +66,11 @@ Role of BACH2 in HIV-1 persistent T cells of the gut.<br>
 _Image source: [Wei et al. (2025)](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0)_
 ::: 
 
-TODO flush out this section
+The main focus of this paper was to identify factors involved in HIV persistence within different T-cell populations. In this vein, many of the results were generated after sorting on CD4 and CD8 positive cells to zoom in on those T-cell subtypes. These experiments were also conducted with DOGMA-seq. For the purposes of this workshop we are going to focus on the non-sorted cells, which include immune, epithelial, and glial cell populations.
 
 ### Samples
 
-This dataset includes 17,642 cells in PLWH and 22,422 cells in HIV− individuals. Each PLWH donor was tagged with oligo-barcoded antibodies, pooled, and then sequenced. From all of these cells, the authors were able to identify 16 distinct cell types in the dataset (@fig-dataset_umap).
+This dataset includes 17,642 cells from PLWH and 22,422 cells from HIV-negative individuals. Each PLWH donor was tagged with oligo-barcoded antibodies, pooled, and then sequenced. From all of these cells, the authors were able to identify 16 distinct cell types in the dataset (@fig-dataset_umap).
 
 ::: {#fig-dataset_umap .figure}
 ![](../img/02_dataset_umap.png){width=500}
@@ -79,7 +79,7 @@ UMAP of cell types identified in the samples collected.<br>
 _Image source: [Wei et al. (2025)](https://www.cell.com/immunity/fulltext/S1074-7613(25)00331-0)_
 ::: 
 
-To start, we will be using this heterogeneous population of cells to showcase how multiomics datasets are processed. We will first begin with the antibody hashes and protein expression before moving on to the ATAC-seq material.
+To start, we will be using this heterogeneous population of cells to showcase how multiomics datasets are processed. We will first begin with the hashtags (HTO) and protein expression before moving on to the ATAC-seq material. Lastly, we will pull all three molecular modalities together to run further downstream analyses.
 
 ::: callout-note
 # scRNA-seq
@@ -87,39 +87,42 @@ To start, we will be using this heterogeneous population of cells to showcase ho
 Note that we will not discuss the upstream methods used to process [scRNA-seq as we have a separate workshop](https://hbctraining.github.io/Intro-to-scRNAseq/) that details those steps in much more depth.
 :::
 
-Lastly, we will pull all three molecular modalities together to run further downstream analyses.
-
 ## Getting set-up
 
-If you have not already, be sure to download the dataset so that you can access the files used in this analysis. The data can be downloaded from [this link](TODO).
+If you have not already, be sure to download the dataset so that you can access the files used in this analysis. The data can be downloaded from [**this link**](https://www.dropbox.com/scl/fo/79zkupvrf5kayqc6do6wm/AHxWZglO35EBODqKAcjEnao?rlkey=qqhm3kcmgve5v1olom4zr00ej&st=d98pad13&dl=1).
 
-### Project organization
+The dataset is downloaded as a single zipped folder. To get it ready for the workshop:
 
-When you have large amounts of data, it is easy to lose track of your files and become overwhelmed. We tend to prioritize the analysis and, in the excitement of getting a first look at our data, we often forget to consider how we are going to manage our data and files. This is a common mistake, as **data management is often an afterthought** when it should be a key part of the workflow from the very beginning. The [HMS Data Management Working Group](https://datamanagement.hms.harvard.edu/) discusses in-depth some aspects to consider beyond the data creation and analysis.
-
-One important aspect of data management is organization. For each experiment you work on and analyze data for, it is considered best practice to get organized by creating **a planned storage space**. We will do that for our analysis. 
-
+1. Locate the downloaded `.zip` file (usually in your `Downloads` folder).
+2. Unzip the file by double-clicking on it. This creates a folder called `sc_multiomics`.
+3. Move the `sc_multiomics` folder to your `Desktop`, so that it is easy to find throughout the workshop.
 
 ::: callout-important
 # Note for Windows OS users
 After unzipping, check whether you have a nested `sc_multiomics/sc_multiomics` folder. If so, move everything from the inner folder up into the outer one, then delete the empty inner folder.
 :::
 
+### Project organization
+
+When you have large amounts of data, it is easy to lose track of your files and become overwhelmed. We tend to prioritize the analysis and, in the excitement of getting a first look at our data, we often forget to consider how we are going to manage our data and files. This is a common mistake, as **data management is often an afterthought** when it should be a key part of the workflow from the very beginning. The [HMS Data Management Working Group](https://datamanagement.hms.harvard.edu/) discusses in-depth some aspects to consider beyond the data creation and analysis.
+
+One important aspect of data management is organization. For each experiment you work on and analyze data for, it is considered best practice to get organized by creating **a planned storage space**. Following these best practices, the files downloaded already follow a structured organization.
+
 ### Opening RStudio
 
-We can open the R Project up and see that the provided file structure should look like @fig-rstudio_setup.
+Inside the `sc_multiomics` folder on your `Desktop`, double-click the `sc_multiomics.Rproj` file. This opens RStudio with the working directory already set to the project folder. The provided file structure should look like @fig-rstudio_setup.
 
 ::: {#fig-rstudio_setup .figure}
-![](../img/tmp.png){width=900}
+![](../img/02_rstudio_setup.png){width=900}
 
-TODO Correct setup for RStudio to start the workshop.
+Correct setup for RStudio to start the workshop.
 ::: 
 
 If your RStudio session looks similar to the image above, then you are ready to start!
 
 ### New script
 
-Next, open a new Rscript file and start with some comments to indicate what this file is going to contain. Ideally, we will have one script per major step in our analysis. For this first script, we will be loading our data and demultiplexing - as indicated in the header.
+Next, open a new Rscript file and start with some comments to indicate what this file is going to contain. Ideally, we will have one script per major step in our analysis. For this first script, we will be loading our data, demultiplexing the hashtags (HTO), and processing the protein expression (ADT), as indicated in the header.
 
 Loading your libraries at the top of the script will also allow you to easily keep track of which libraries you are using and to load them all at once in the beginning.
 
@@ -138,7 +141,7 @@ library(Seurat)
 set.seed(123456789L)
 ```
 
-Save the Rscript as `01_demultiplex_hto_and_protein.R` in your main folder. Your working directory should look something like this:
+Save the Rscript as `01_demultiplex_hto_and_protein.R` in your main folder. Your `data` directory should look something like this:
 
 ```{r}
 #| label: full_data_structure
@@ -147,12 +150,14 @@ Save the Rscript as `01_demultiplex_hto_and_protein.R` in your main folder. Your
 fs::dir_tree("data/", recurse = 1)
 ```
 
+The `data` folder contains the raw counts for sample `PT1`, a `processed_seurat_objects` folder, and the `samples.tsv` metadata file. To orient ourselves on how to work with this dataset, we will start by working with the sample `PT1`.
+
 
 ## Sample metadata
 
-A great way to keep track of your samples is to create a samples table that contains all the relevant metadata. This can include fields such as sex, batch, date sequenced, and more. Collating all this into one spreadsheet will make it easier to match our dataset with the correct experimental conditions.
+A great way to keep track of your samples is to create a samples table that contains all the relevant metadata. Collating all of this information into one spreadsheet will make it easier to match our dataset with the correct experimental conditions.
 
-Inside the `data/` folder, we have provided one such metadata file called `samples.tsv`. This file contains information about each sample in our dataset. We will first load this in to familiarize ourselves with the data we will be using in the next step.
+Inside the `data/` folder, we have provided one such metadata file called `samples.tsv`. For each library, it records the HIV status, the donor(s) it came from, and donor information such as sex, age, race, and treatment. We will first load this in to familiarize ourselves with the data we will be using in the next step.
 
 ```{r}
 #| label: load_samples_metadata
@@ -170,9 +175,9 @@ df_meta <- read_tsv("data/samples.tsv")
 df_meta %>% knitr::kable()
 ```
 
-This table is valuable because it gives us some key information about each sample. For example, we can see that we have multiple sequencing runs from the same patient for many of the HIV negative samples. More consequentially, in the `patient` column, we see the label `pooled` for all of the PLWH samples.
+This table is valuable because it gives us some key information about each sample. For example, we can see that we have multiple libraries from the same patient for many of the HIV-negative samples. More consequentially, in the `patient` column, we see the label `pooled` for all of the PLWH samples. Note that PT4 is a non-pooled HIV-negative sample despite following a different naming convention.
 
-Recall earlier that we discussed that some samples were first tagged with an antibody and then pooled into a singular run. This is a common cost-saving technique used to sequence multiple samples at once. However, in doing so, we must computationally determine which cell comes from which sample by using those hash sequences. This process is called **demultiplexing** which we will discuss more deeply in the next section.
+Recall earlier that we discussed that some samples were first tagged with an antibody and then pooled into a single library. This is a common cost-saving technique used to sequence multiple samples at once. However, in doing so, we must computationally determine which cell comes from which sample by using those hash sequences. This process is called **demultiplexing** which we will discuss more deeply in the next lesson.
 
 ***
 
