@@ -49,9 +49,9 @@ Before designing an experiment and collecting samples, it is important to determ
 The field of single-cell sequencing has evolved beyond its intial focus on gene expression (RNA) capture. Additional methods have been developed to capture additional information for **each cell**, including the epigenome (chromatin accessibility), proteome, and more. Experiments that contain more than one modality is what is typically referred to as a multiomics experiment.
 
 ::: {#fig-asap_seq .figure}
-![](../img/01_asap_seq.png){width=900}
+![](../img/01_dogma_seq.png){width=900}
 
-Schematic how the ASAP-seq protocol captures single-cell RNA, ATAC, and protein expression.<br>
+Schematic how the DOGMA-seq protocol captures single-cell RNA, ATAC, and protein expression.<br>
 _Image source: [Mimitou et al. (2021)](https://www.nature.com/articles/s41587-021-00927-2)_
 ::: 
 
@@ -115,10 +115,10 @@ In practice, most multiomic experiments are run with commercial kits from 10x Ge
 Measuring chromatin accessibility requires the transposase to reach the DNA, so the RNA + ATAC multiome is performed on **isolated nuclei** rather than whole cells (@fig-multiome_workflow).
 
 ::: {#fig-multiome_workflow .figure}
-![](../img/01_multiome_workflow.png){width=900}
+![](../img/01_multiome_rna_atac.png){width=400}
 
-TODO Workflow of the Single Cell Multiome ATAC + Gene Expression assay: nuclei are isolated, transposed in bulk, and then partitioned so that RNA and ATAC fragments from the same nucleus share a cell barcode.<br>
-_Image source: [10x Genomics](https://www.10xgenomics.com/products/single-cell-multiome-atac-plus-gene-expression)_
+Nuclei are isolated and then partitioned so that RNA and ATAC fragments from the same nucleus share a cell barcode.<br>
+_Image source: [Genewiz](https://www.genewiz.com/en-gb/public/services/next-generation-sequencing/single-cell-atac-seq)_
 ::: 
 
 The quality of the nuclei preparation largely decides the quality of the data. Key challenges when working with nuclei include:
@@ -136,7 +136,7 @@ Working with nuclei instead of whole cells also changes what you can measure, co
 
 
 ::: {#fig-cell_vs_nuclei .figure}
-![](../img/01_cell_vs_nuclei.png){width=600}
+![](../img/01_cell_vs_nuclei.png){width=400}
 
 Number of genes detected in matched single-cell (blue) and single-nucleus (red) RNA-seq of mouse cortical neurons. Nuclei consistently yield fewer detected genes than whole cells.<br>
 _Image source: [Bakken et al. (2018)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0209648)_
@@ -163,7 +163,7 @@ Because CITE-seq relies on antibody staining, many of the considerations are sim
 Cell hashing uses antibodies against ubiquitously expressed surface proteins so that cells from different samples can be **pooled** and later separated (@fig-cell_hashing).
 
 ::: {#fig-cell_hashing .figure}
-![](../img/01_cell_hashing.png){width=900}
+![](../img/01_cell_hashing.png){width=600}
 
 Each sample is labeled with a uniquely barcoded antibody before pooling, allowing cells to be assigned back to their sample and doublets to be identified.<br>
 _Image source: [Stoeckius et al. (2018)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-018-1603-1)_
@@ -204,7 +204,7 @@ After sequencing, the raw reads for each modality need to be aligned and counted
 [Cell Ranger ARC](https://www.10xgenomics.com/support/software/cell-ranger-arc/latest/algorithms-overview/algorithms-overview) processes data from the Multiome ATAC + Gene Expression kit with the `cellranger-arc count` command. The gene expression and ATAC libraries are processed in two parallel branches, which come together at cell calling (@fig-cellranger_arc).
 
 ::: {#fig-cellranger_arc .figure}
-![](../img/01_cellranger_arc.png){width=900}
+![](../img/01_cellranger_arc.png){width=600}
 
 Gene expression and ATAC reads are aligned and counted in parallel, then combined during joint cell calling before downstream analysis.<br>
 _Image source: [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger-arc/latest/algorithms-overview/algorithms-overview)_
@@ -215,19 +215,31 @@ _Image source: [10x Genomics](https://www.10xgenomics.com/support/software/cell-
 [Cell Ranger multi](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/running-pipelines/cr-3p-multi) processes several library types from the same GEM well together with the `cellranger multi` command. For a CITE-seq experiment, these are the gene expression library and the antibody capture (ADT) library (@fig-cellranger_multi).
 
 ::: {#fig-cellranger_multi .figure}
-![](../img/01_cellranger_multi.png){width=450}
+![](../img/01_cellranger_multi.png){width=300}
 
 Samples are labeled with hashtag antibodies (HTOs) and pooled, producing a gene expression (GEX) library and an antibody capture library.<br>
 _Image source: [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/running-pipelines/cr-3p-multi)_
 :::
 
+### RNA + ATAC + protein
+
 Protocols that capture all three modalities, such as the DOGMA-seq dataset (used in this workshop), do not fit neatly into either pipeline. Instead, the data is run through **both**: Cell Ranger ARC processes the RNA + ATAC libraries, and Cell Ranger multi processes the RNA + ADT libraries (including the hashtags). The cells called by Cell Ranger ARC are then used to keep the same set of cell barcodes across all three modalities.
+
+This will be the case for the dataset used throughout this workshop.
 
 ## Downstream analyses
 
-TODO: take figures from each modality to collate into a single figure
+Each of the modalities alone allow a variety of different downstream analyses according to the information that is represented in the modality.
 
-https://www.nature.com/articles/s41576-023-00586-w
+::: {#fig-multiomics_analyses .figure}
+![](../img/01_multiomics_modalities_overview.png){width=900}
+
+Different bioinformatics analyses that can be computed on each different modality.<br>
+_Image source: Adapted from [Heumos et al. (2023)](https://www.nature.com/articles/s41576-023-00586-w)_
+:::
+
+Each of the modalities can be analyzed alone to produce results. However, there are a variety of different methods that allow you to combine the results from different modalities to produce more comprehensive and accurate results. For example, one of the most common techniques is weighted nearest neighbors which is able to consider the contribution of each modality to the overall profile of a cell during clustering. We will learn how to run weighted nearest neighbors in the lesson on scATAC-seq.
+
 
 ***
 
