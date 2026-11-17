@@ -9,19 +9,11 @@ categories:
   - Protein (ADT)
   - Normalization
   - Integration
-  - Cell type annotation
   - Seurat
 keywords:
-  - CITE-seq analysis Seurat
-  - ADT normalization CLR
+  - CITE-seq
   - antibody-derived tags (ADT)
-  - surface protein single-cell
-  - isotype controls CITE-seq
-  - protein PCA UMAP Seurat
   - Harmony batch correction
-  - single-cell cell type annotation
-  - RNA vs protein expression single-cell
-  - CD4 CD8 dropout scRNA-seq
 license: "CC-BY-4.0"
 editor_options: 
   markdown: 
@@ -35,6 +27,7 @@ editor_options:
 library(Seurat)
 library(tidyverse)
 library(harmony)
+library(ggpointdensity)
 
 # Set seed
 set.seed(123456789L)
@@ -60,9 +53,9 @@ In this section, we will normalize the protein counts, reduce their dimensionali
 
 ## Protein expression (ADT)
 
-Alongside RNA, each cell in our dataset was stained with a panel of 165 oligo-tagged antibodies, giving us a measure of surface protein abundance for every cell. Proteins are often the most direct readout of cell type.
+Alongside RNA, each cell in our dataset was stained with a panel of 165 oligo-tagged antibodies, giving us a measure of surface protein abundance for every cell. Proteins are often the most direct readout of cell type, which allows us to infer cell identity from protein expression. For this project, many of the proteins were selected to identify immune cell types (e.g. CD3, CD4, CD8, CD19, HLA-DR).
 
-Many of the markers used to define immune cell types (CD3, CD4, CD8, CD19, HLA-DR) were originally defined by their protein expression with flow cytometry.
+Since this lesson focuses on the protein expression, we set our `DefaultAssay` to `ADT` to ensure that all calculations and visualizations are being done with the protein.
 
 ```{r}
 #| label: set_default_assay_adt
@@ -72,9 +65,9 @@ DefaultAssay(seurat_demux) <- "ADT"
 
 ### Isotype controls
 
-Not every antibody in the panel targets a human protein. **Isotype controls** are antibodies of the same class as the real antibodies but with no target in human cells. Any counts they receive come from non-specific binding, so they tell us the level of background noise in each cell. They are useful for quality control, but they carry no biological signal, so we will exclude them from the downstream analysis.
+Not every antibody in our panel targets a human protein. **Isotype controls** are antibodies of the same class as the real antibodies but with no target in human cells. Any counts they receive come from non-specific binding, so they tell us the level of background noise in each cell. They are useful for quality control, but they carry no biological signal, so we will exclude them from the downstream analysis.
 
-Our panel contains nine isotype controls:
+Our panel contains the following nine isotype controls:
 
 ```{r}
 #| label: isotypes
@@ -84,7 +77,7 @@ isotypes <- c("ArmenianHamsterIgG",
               "RatIgG1k", "RatIgG1l", "RatIgG2a", "Rat-IgG2b-isotype", "RatIgG2c")
 ```
 
-We can check the expression of each of these isotypes to confirm their expression levels.
+Before moving forward, we will first assess the expression levels of each of the isotype controls to confirm that there is little to no expression.
 
 ```{r}
 #| label: fig-isotype
@@ -99,7 +92,7 @@ VlnPlot(seurat_demux,
         pt.size = 0)
 ```
 
-We can see that there is pratically zero expression of each of these isotypes which confirms that we can proceed with our data as is.
+We can see that there is practically zero expression of each of these isotypes, which confirms that we can proceed with our data as is.
 
 ### Normalization
 
@@ -118,7 +111,7 @@ seurat_demux
 
 ### Feature selection
 
-Recall that our protein panel is comprised of 165 antibodies - which is a small number compared to the ~36,000 genes in the RNA assay. In a typical scRNA workflow, this would be where we identify the top variable genes in the datset. However, since there are so few protein, we will instead use every protein except the isotype controls.
+Recall that our protein panel is made up of 165 antibodies, which is a small number compared to the ~36,000 genes in the RNA assay. In a typical scRNA-seq workflow, this would be where we identify the top variable genes in the dataset. However, since there are so few proteins, we will instead use every protein except the isotype controls.
 
 ```{r}
 #| label: adt_features
@@ -129,7 +122,7 @@ VariableFeatures(seurat_demux) <- adt_features
 length(adt_features)
 ```
 
-We are left with `r length(adt_features)` proteins, which we scale before running PCA.
+We are left with `r length(adt_features)` proteins, which we scale before running principal component analysis (PCA).
 
 ```{r}
 #| label: adt_scale
@@ -141,7 +134,6 @@ seurat_demux
 ### PCA
 
 Principal Component Analysis (PCA) is a method that allows us to summarize and reduce the dimensions of our dataset to emphasize the variation and similarity of our data. Utilizing PCA, we are able to identify strong patterns in our dataset to group cells together.
-
 
 #### Calculating PCA
 
@@ -176,7 +168,7 @@ seurat_demux <- RunPCA(
 
 #### Visualizing PCA
 
-Principal components analysis (PCA) stratifies the data by variance. Points closer together are more similar, and points further apart are more dissimilar. We can visualize the PCA results using `DimPlot()` to see if we can identify if there is any technical or biological variable is driving the separation of cells.
+Principal components analysis (PCA) stratifies the data by variance. Points closer together are more similar, and points further apart are more dissimilar. We can visualize the PCA results using `DimPlot()` to see whether any technical or biological variable is driving the separation of cells.
 
 ```{r}
 #| label: fig-pca_adt_library
@@ -191,7 +183,24 @@ DimPlot(seurat_demux,
 ```
 
 
-The libraries are spread out along the first principal component: `PT1` forms its own group at one end, `PT4` sits at the other, and `PT2` occupies its own region at the top of the plot. In this dataset, **HIV status and library are confounded**. Every PLWH cell comes from one of the four pooled `PT` libraries. Therefore, we cannot yet tell how much of this separation is biology and how much is a technical difference between sequencing runs. We will keep an eye on this in the UMAP.
+The libraries are spread out along the first principal component: `PT1` forms its own group at one end, `PT4` sits at the other, and `PT2` occupies its own region at the top of the plot. In this dataset, **HIV status and library are confounded**. Every PLWH cell comes from one of the three pooled libraries (`PT1`, `PT2`, and `PT3`). Therefore, we cannot yet tell how much of this separation is biology and how much is a technical difference between sequencing runs. We will keep an eye on this in the UMAP.
+
+::: {.callout-note collapse="true"}
+# How many PCs should we use?
+
+We computed 30 PCs, but the later steps (UMAP, Harmony, and clustering) use only the first 20. A common way to choose this number is an **elbow plot**, which shows the standard deviation explained by each PC. The point where the curve flattens out (the "elbow") is where additional PCs stop adding much information.
+
+```{r}
+#| label: fig-elbow_adt
+#| fig-cap: Elbow plot of the standard deviation explained by each protein PC.
+# Elbow plot of protein PCs
+ElbowPlot(seurat_demux,
+          ndims = 30,
+          reduction = "pca_adt")
+```
+
+The curve drops steeply over the first few PCs and flattens out between PCs 12 and 15. Using 20 PCs keeps everything up to the elbow with a small margin, without adding PCs that mostly capture noise.
+:::
 
 #### PCA weights
 
@@ -208,7 +217,7 @@ The later PCs look like cell type markers. `adtPC_2` separates T cells (CD2, CD3
 
 ### UMAP
 
-[UMAP]((https://umap-learn.readthedocs.io/en/latest/how_umap_works.html)) takes the information from the top PCs and arranges the cells in two dimensions while trying to preserve local structure. Cells that are close together have similar protein expression based upon the values stored in the principle components. Bear in mind that the **distances between clusters should not be over-interpreted**.
+[UMAP](https://umap-learn.readthedocs.io/en/latest/how_umap_works.html) takes the information from the top PCs and arranges the cells in two dimensions while trying to preserve local structure. Cells that are close together have similar protein expression based upon the values stored in the principal components. Bear in mind that the **distances between clusters should not be over-interpreted**.
 
 First, we run UMAP directly on the uncorrected PCA.
 
@@ -240,11 +249,13 @@ DimPlot(seurat_demux,
 ```
 
 
-The batch effect is much clearer in the UMAP. Nearly all cells from `PT2` and `PT3` form a separate island, and `PT1` and `PT4` each occupy their own region instead of mixing with the HIV− libraries. Since we expect the same immune cell types to be present in every library, this is a **strong sign that we need to run integration**. As we did for RNA, we set `group.by.vars = "orig.ident"` to correct for differences between libraries.
+The batch effect is much clearer in the UMAP. Nearly all cells from `PT2` and `PT3` form a separate island, and `PT1` occupies its own region instead of mixing with the HIV− libraries. Since we expect the same immune cell types to be present in every library, this is a **strong sign that we need to run integration**. 
 
 ### Harmony integration
 
 If cells cluster by sample, batch, dataset, or modality, integration can greatly improve the clustering and downstream analyses. We "integrate" or "harmonize" the groups to overlay cells that share a common set of biological features. We use [`Harmony`](https://portals.broadinstitute.org/harmony/articles/quickstart.html), which iteratively adjusts the principal components so that cells of the same type from different libraries are placed together.
+
+In the case of our dataset, we will set `group.by.vars = "orig.ident"` to correct for differences between libraries. 
 
 ```{r}
 #| label: adt_harmony
@@ -256,7 +267,15 @@ seurat_demux <- RunHarmony(
   dims.use = 1:20,
   reduction.save = "harmony_adt",
   verbose = FALSE)
+```
 
+This results in a batch-corrected dimensionality reduction, similar to PCA, which we call `harmony_adt`. With these corrected values, we can then run the UMAP algorithm again, but now on the corrected space to visualize how the cells appear to group together. If there is good overlap between the libraries, we then know that the integration step was successful. 
+
+```{r}
+#| label: fig-umap_adt_library
+#| fig-cap: Protein UMAP after Harmony integration, colored by library (left) and HIV status (right).
+#| fig-width: 12
+#| fig-height: 5.5
 # UMAP on corrected protein PCs
 seurat_demux <- RunUMAP(
   seurat_demux,
@@ -266,17 +285,8 @@ seurat_demux <- RunUMAP(
   reduction.key = "adtUMAP_",
   verbose = FALSE,
   seed.use = 123456789L)
-```
 
-We use this corrected space as the input to re-run UMAP, which we can now visualize here:
-
-
-```{r}
-#| label: fig-umap_adt_library
-#| fig-cap: Protein UMAP after Harmony integration, colored by library (left) and HIV status (right).
-#| fig-width: 12
-#| fig-height: 5.5
-# Protein UMAP after integration by library and HIV status
+# Protein UMAP after integration, colored by library and HIV status
 DimPlot(seurat_demux,
         group.by = c("orig.ident", "hiv_status"),
         reduction = "umap_adt",
@@ -295,8 +305,9 @@ Because HIV status is confounded with library, correcting for library also remov
 
 Now that we have an integrated protein embedding, we can group the cells into clusters based on their protein expression alone. Clustering is a graph-based approach that happens in two steps:
 
-1. `FindNeighbors()`: Build a k-nearest neighbor graph, connecting each cell to the cells with the most similar protein expression. We use the Harmony-corrected PCs (`harmony_adt`) and the same 20 dimensions we used for the UMAP. Following the convention from the RNA analysis, we name the graphs `nn_adt` and `snn_adt` so that they do not overwrite the RNA graphs.
-2. `FindClusters()`: Partition the shared nearest neighbor graph (`snn_adt`) into clusters. The **resolution** sets the granularity: smaller values give fewer, larger clusters.
+1. `FindNeighbors()`: Build a k-nearest neighbor graph, connecting each cell to the cells with the most similar protein expression. We use the Harmony-corrected PCs (`harmony_adt`) and the same 20 dimensions we used for the UMAP. We name the graphs `nn_adt` and `snn_adt` so that they do not overwrite the RNA graphs.
+
+2. `FindClusters()`: Partition the shared nearest neighbor graph (`snn_adt`) into clusters. Setting `algorithm = 4` uses the [Leiden algorithm (Traag et al. 2019)](https://www.nature.com/articles/s41598-019-41695-z), which improves on the older Louvain algorithm by guaranteeing that the clusters it finds are well connected. The **resolution** sets the granularity: smaller values give fewer, larger clusters.
 
 ```{r}
 #| label: adt_clustering
@@ -313,14 +324,41 @@ seurat_demux <- FindClusters(
   seurat_demux,
   graph.name = "snn_adt",
   resolution = 0.8,
+  algorithm = 4,
   random.seed = 123456789L,
   verbose = FALSE)
 ```
 
+Now that the clusters have been computed, we can visualize how well they group cells on the UMAP:
+
+```{r}
+#| label: fig-umap_adt_clusters
+#| fig-cap: Clusters on the protein UMAP at a resolution of 0.8.
+# ADT clusters and UMAP
+DimPlot(seurat_demux,
+        group.by = "snn_adt_res.0.8",
+        reduction = "umap_adt",
+        label = TRUE)
+```
+
+Looking at a UMAP can be a bit subjective, so we encourage you all to use a variety of different visualizations to make decisions. For example, to assess how well the integration worked, we can plot the proportion of cells from `orig.ident` in each cluster as a bar plot:
+
+```{r}
+#| label: fig-barplot_adt_proportion_clusters
+#| fig-cap: Proportion of cells in each ADT cluster by `orig.ident`.
+# Barplot of proportion of cells in each cluster by orig.ident
+ggplot(seurat_demux@meta.data) +
+    geom_bar(aes(x = snn_adt_res.0.8, fill = orig.ident), 
+             position = position_fill(),
+             color = "black")  +
+    theme_classic()
+```
+
+From this, we can see that each library is represented in each cluster of our dataset, which is a more quantitative way to confirm that our integration step was successful.
 
 ## Comparing RNA and ADT
 
-We now have two independent sets of clusters at the same resolution: one computed from RNA expression (`snn_rna_res.0.8`) and one from protein expression (`snn_adt_res.0.8`). Let's start by plotting each set of clusters on the UMAP of its own modality, side by side.
+The `RNA` assay was already run through the standard Seurat workflow, including the same integration, UMAP, and clustering steps. As a result, we now have two independent sets of clusters at the same resolution: one computed from RNA expression (`snn_rna_res.0.8`) and one from protein expression (`snn_adt_res.0.8`). Let's start by plotting each set of clusters on the UMAP of its own modality, side by side.
 
 ```{r}
 #| label: fig-umap_rna_adt_clusters
@@ -345,9 +383,9 @@ p_adt <- DimPlot(seurat_demux,
 p_rna + p_adt
 ```
 
-Even at the same resolution, the **two modalities organize the cells quite differently**. On the RNA UMAP, the clusters form well-separated islands, with clear gaps between the major groups. On the protein UMAP, most of the cells form one continuous structure. This difference comes from what each modality measures. RNA clustering uses _2,000 variable genes_, which capture many cell type-specific programs, while protein clustering uses our panel of about _150 surface markers_. Cells that share most of their surface markers end up close together in protein space, even if their transcriptomes are distinct.
+Even at the same resolution, the **two modalities organize the cells quite differently**. On the RNA UMAP, the clusters form well-separated islands, with clear gaps between the major groups. On the protein UMAP, most of the cells form one continuous structure. This difference comes from what each modality measures. RNA clustering uses _2,000 variable genes_, which capture many cell type-specific programs, while protein clustering uses our panel of _`r length(adt_features)` surface markers_. Cells that share most of their surface markers end up close together in protein space, even if their transcriptomes are distinct.
 
-Earlier, we clustered the cells on their RNA expression at a resolution of `0.8` (stored in the `snn_rna_res.0.8` column). A useful check is to color the protein UMAP by these RNA clusters: if both modalities capture the same cell types, each RNA cluster should occupy its own region of the protein UMAP.
+The RNA clusters were pre-computed at a resolution of `0.8` and are stored in the `snn_rna_res.0.8` column. A useful check is to color the protein UMAP by these RNA clusters: if both modalities capture the same cell types, each RNA cluster should occupy its own region of the protein UMAP.
 
 ```{r}
 #| label: fig-umap_adt_rna_clusters
@@ -361,7 +399,7 @@ DimPlot(seurat_demux,
         label = TRUE)
 ```
 
-When we look at the proteins on panel, we can see that they are primarily associated with immune popluations. As a result, the protein expression alone is not capable of identifying populations such as epithelial cells. This shows that each modality captures different information about a cell, which is why combining them can give a more complete picture than either one alone.
+The RNA clusters do not map one-to-one onto regions of the protein UMAP. Some RNA clusters stay together, while others are spread across or merged with their neighbors. This is largely due to the proteins in our panel: they were chosen to distinguish immune populations, so cell types without matching markers on the panel look alike in protein space. As a result, the protein expression alone is not capable of identifying populations such as epithelial cells. This shows that each modality captures different information about a cell, which is why combining them can give a more complete picture than either one alone.
 
 ## Cell typing
 
@@ -388,11 +426,11 @@ Now that we have both RNA and protein measurements for every cell, we can use th
 
 : Marker genes and proteins for the cell populations in the gut. {#tbl-markers_gut}
 
-Notice that the protein column is empty for the non-immune cell types. The antibody panel was designed to profile immune cells, so for the epithelial and stromal populations we have to rely on RNA alone.
+Notice that the protein column is empty for many non-immune cell types. The antibody panel was designed to profile immune cells, so for the epithelial and stromal populations we will have to rely on RNA alone.
 
 ### Identifying CD4+ and CD8+ T cells
 
-T cells are a good example of why it helps to have both modalities. CD4+ and CD8+ T cells are traditionally separated by the surface proteins CD4 and CD8. In scRNA-seq, however, the *CD4* transcript is notoriously hard to detect: it is expressed at low levels, so many CD4+ T cells have zero *CD4* counts in the data. This is known as **dropout**.
+Having protein expression can be really valuable when it comes to identifying cell types in your dataset. When working with single-cell RNA-seq, you must always be cognizant of **dropout**. This is a common problem in scRNA-seq, where genes that _should_ be expressed are not captured in the experiment. Protein expression suffers much less from dropout, which makes it a valuable resource for confidently assigning cell type identities. To showcase the differences between protein and RNA, we can compare expression of the same gene/protein in both assays. In this case, we will use `CD4` and `CD8` as our markers of interest as they are markers for CD4+ and CD8+ T cells respectively. 
 
 To see this, we plot the RNA and protein expression of CD4 and CD8 side by side on the RNA UMAP. Since the same feature name (e.g. `CD4`) exists in both the `RNA` and `ADT` assays, we add the assay key as a prefix (`rna_` or `adt_`) to tell Seurat which one to plot.
 
@@ -402,35 +440,47 @@ To see this, we plot the RNA and protein expression of CD4 and CD8 side by side 
 #| fig-width: 10
 #| fig-height: 8
 # CD4 and CD8 expression from RNA and protein
+Idents(seurat_demux) <- "snn_rna_res.0.8"
 FeaturePlot(seurat_demux,
-            features = c("rna_CD4", "rna_CD8A", "adt_CD4", "adt_CD8"),
+            features = c("rna_CD4", "rna_CD8A", 
+                         "adt_CD4", "adt_CD8"),
             reduction = "umap_rna",
             order = TRUE,
+            label = TRUE,
             ncol = 2)
 ```
 
-The two modalities tell a consistent story, but with very different clarity:
+The two modalities tell a consistent story, but with different clarity. We can see that the expression of _CD4_ and _CD8_ is more sparse when looking at the RNA expression. In contrast, cells show more uniform expression in the ADT assay. This is much more evident when we look at a violin plot of clusters 1, 3, and 11 where our T cells are located.
 
-- **RNA:** *CD4* transcripts are detected in only a scattered subset of cells in the CD4 T cell region (about 7% of cells in cluster 1 and 12% in cluster 11). *CD8A* is detected more often, but still in only about a quarter of the cells in the CD8 T cell cluster (cluster 3).
-- **Protein:** CD4 and CD8 protein light up almost the entire CD4 and CD8 T cell regions, respectively. Because antibody counts are much higher than the counts for a single transcript, the protein signal does not suffer from the same dropout.
+```{r}
+#| label: fig-cd4_cd8_vln
+#| fig-cap: RNA (top) and protein (bottom) expression of CD4 and CD8 in the T cell clusters (1, 3, and 11).
+# Violin plot of CD4 and CD8 expression in T cell clusters
+VlnPlot(seurat_demux,
+        features = c("rna_CD4", "rna_CD8A", 
+                     "adt_CD4", "adt_CD8"),
+        idents = c(1, 3, 11),
+        ncol = 2,
+        pt.size = 0)
+```
 
-If we only had the RNA, we would identify CD4 T cells from the other markers in the table (*CD3E*, *IL7R*, *CD40LG*). With the protein, we have direct confirmation of the marker that defines the population.
+From the violin plot, we can see that the majority of cells have near 0 expression of _CD4_ and _CD8_ RNA. In contrast, the proteins are detected in many more cells. This makes it much easier to confidently assign cell type identities to clusters 1 and 11 as CD4+ T cells as well as cluster 3 as CD8+ T cells.
 
-::: callout-note
-# CD4 on monocytes
-You may notice moderate CD4 protein (and some *CD4* RNA) in the small monocyte cluster as well. This is real biology: human monocytes express low levels of CD4. This is why we use a combination of markers, rather than a single one, to assign cell types.
-:::
 
 ### Assigning cell types
 
-Using the marker genes and proteins, we assigned a cell type to each of the 20 RNA clusters. For clusters where the markers were less clear-cut, we have left a comment explaining the decision.
+Using the marker genes and proteins, we assigned a cell type to each of the RNA clusters. We typically recommend using multiple markers as the justification for how a cell type was identified. Knowing top or known marker genes/proteins is the best way to identify each population. In the dropdown, we show the dotplot of the markers referenced in the earlier table. 
 
 ::: {.callout-note collapse="true"}
 # DotPlot of top markers
 
+Here we plot the marker genes, focusing on the RNA expression. 
+
 ```{r}
-#| label: fig-markers_gut
-#| fig-cap: Showcasing expression levels of known marker genes to identify cell types.
+#| label: fig-markers_gut_rna
+#| fig-cap: Showcasing expression levels of known marker genes to identify cell types with RNA expression.
+#| fig-width: 20
+#| fig-height: 8
 # Marker genes for each cell type
 markers_gut <- list(
   "CD4 T"                 = c("CD3E", "CD4", "IL7R", "CD40LG"),
@@ -453,14 +503,45 @@ markers_gut <- list(
 DotPlot(seurat_demux, markers_gut,
         group.by = "snn_rna_res.0.8",
         assay = "RNA") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        strip.text.x = element_text(angle = 90, hjust = 0))
 ```
+
+We can do the same with the marker proteins, this time using the `ADT` assay. `DotPlot()` can only show each feature once, so proteins shared by several cell types (e.g. CD3 for all T cells) are grouped together:
+
+```{r}
+#| label: fig-markers_gut_adt
+#| fig-cap: Showcasing expression levels of known marker proteins to identify cell types with ADT expression.
+#| fig-width: 8
+#| fig-height: 7
+# Marker proteins for each cell type
+markers_gut_adt <- list(
+  "T cells"           = c("CD3"),
+  "CD4 T"             = c("CD4"),
+  "CD8 T"             = c("CD8"),
+  "B cells"           = c("CD19", "CD20"),
+  "B naive"           = c("IgD"),
+  "B memory / Plasma" = c("CD27", "CD38"),
+  "CD14 monocytes"    = c("CD14", "HLA-DR"),
+  "NK"                = c("CD56"),
+  "Endothelial"       = c("CD31"))
+
+DotPlot(seurat_demux, markers_gut_adt,
+        group.by = "snn_rna_res.0.8",
+        assay = "ADT") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        strip.text.x = element_text(angle = 90, hjust = 0))
+```
+
+Notice that CD56, our NK cell protein marker, is highest in cluster 18 rather than in the NK cells (cluster 6). Cluster 18 expresses the enteric glia genes *PLP1*, *SOX10*, and *CDH19*, and enteric glia also express CD56 (*NCAM1*) on their surface. This is a good reminder that a single protein is rarely specific to one cell type, so we should always look at several markers, across both modalities, before assigning a label.
 
 :::
 
+Once we are confident in how we want to map the clusters to cell types, we create a named list of cell type labels. We will be using this list to rename our cells so that they are labelled by cell type rather than cluster in the next step.
+
 ```{r}
 #| label: celltype_labels
-# Cluster -> cell type labels
+# Cluster to cell type labels
 celltype_labels <- list(
   "1"  = "CD4 T",
   "2"  = "Plasma cell - IgA",
@@ -510,7 +591,7 @@ pal_gut <- c(
 )
 ```
 
-To apply the labels, we set the identities of our cells to the RNA clusters and use `RenameIdents()` to replace each cluster number with its cell type. We then store the result in a new `celltype` column in the metadata, ordered to match the palette.
+To apply the labels, we set the identities of our cells to the RNA clusters and use `RenameIdents()` to replace each cluster number with its cell type. We then store the result in a new `celltype` column in the metadata, ordering (factoring) the cell types to match the palette.
 
 ```{r}
 #| label: rename_idents
@@ -521,12 +602,7 @@ Idents(seurat_demux) <- "snn_rna_res.0.8"
 seurat_demux <- RenameIdents(seurat_demux, celltype_labels)
 seurat_demux$celltype <- Idents(seurat_demux)
 seurat_demux$celltype <- factor(seurat_demux$celltype, levels = names(pal_gut))
-
-# Count number of cells
-table(seurat_demux$celltype)
 ```
-
-### Cell types on the RNA and protein UMAPs
 
 Finally, we can visualize our cell type annotations on both the RNA and protein UMAPs.
 
@@ -539,6 +615,7 @@ Finally, we can visualize our cell type annotations on both the RNA and protein 
 p1 <- DimPlot(seurat_demux,
         group.by = "celltype",
         reduction = "umap_rna",
+        label = TRUE,
         cols = pal_gut) + 
   NoLegend() +
   ggtitle("UMAP RNA")
@@ -547,18 +624,28 @@ p1 <- DimPlot(seurat_demux,
 p2 <- DimPlot(seurat_demux,
         group.by = "celltype",
         reduction = "umap_adt",
+        label = TRUE,
         cols = pal_gut) +
   ggtitle("UMAP ADT")
 
 p1 | p2
 ```
 
-
 On the RNA UMAP, each cell type forms a distinct group, which is expected since the clusters were defined on RNA. On the protein UMAP, immune populations with strong surface markers in our panel, such as the CD4 T cells, occupy their own regions. Other populations are more mixed, likely due to the lack of strong marker proteins for those cells.
+
+We can also take this opportunity to count how many cells belong to each cell type.
+
+```{r}
+#| label: ncells_celltype
+# Count number of cells
+table(seurat_demux$celltype)
+```
+
+Notably, two of the populations from our marker table, epithelial cells and myenteric ganglia, have 0 cells because none of the RNA clusters matched them. These cells may become more apparent once we incorporate the ATAC-seq information in future lessons.
 
 ## Protein vs RNA Expression
 
-Earlier, we saw that CD4 protein marks the CD4 T cells much more clearly than the *CD4* transcript. To look at this more closely, we can compare the RNA and protein expression of CD4 in each individual cell, split by cell type.
+Earlier, we saw that CD4 protein marks the CD4 T cells much more clearly than the *CD4* transcript. To look at this more closely, we can compare the RNA and protein expression of CD4 in each individual CD4 T cell.
 
 First, we use `FetchData()` to pull the RNA and protein values for CD4, along with the cell type labels, into a dataframe. As before, the `rna_` and `adt_` prefixes tell Seurat which assay to take each value from.
 
@@ -567,7 +654,8 @@ First, we use `FetchData()` to pull the RNA and protein values for CD4, along wi
 #| eval: false
 # RNA and protein expression of CD4 for each cell
 df_cd4 <- FetchData(seurat_demux,
-                    vars = c("rna_CD4", "adt_CD4", "celltype"))
+                    vars = c("rna_CD4", "adt_CD4", "celltype"),
+                    layer = "data")
 head(df_cd4)
 ```
 
@@ -577,41 +665,38 @@ head(df_cd4)
 #| echo: false
 # RNA and protein expression of CD4 for each cell
 df_cd4 <- FetchData(seurat_demux,
-                    vars = c("rna_CD4", "adt_CD4", "celltype"))
+                    vars = c("rna_CD4", "adt_CD4", "celltype"),
+                    layer = "data")
 head(df_cd4) %>% knitr::kable()
 ```
 
-Now we can plot RNA expression against protein expression, with one panel per cell type.
+After subsetting to our CD4+ T cells, we can do a one-to-one comparison of ADT and RNA expression for `CD4`. Recall that because this is a **multiomics** experiment, these values are captured from the **same cell**. Since these are CD4+ T cells, we would expect all of them to have high levels of `CD4` in both modalities. To check this, we can make a scatter plot where each point represents a cell, the x-axis represents RNA expression, and the y-axis represents protein (ADT) expression.
 
 ```{r}
 #| label: fig-cd4_rna_vs_adt
-#| fig-cap: CD4 RNA expression compared to CD4 protein expression in each cell, split by cell type.
-#| fig-width: 10
-#| fig-height: 8
+#| fig-cap: CD4 RNA expression compared to CD4 protein expression in each CD4 T cell.
+# Subset to CD4+ T cells
 df_cd4 <- subset(df_cd4, celltype == "CD4 T")
 
 # Compare CD4 RNA and protein for CD4+ T cells
 ggplot(df_cd4) +
-  geom_point(aes(x = rna_CD4,
-                 y = adt_CD4,
-                 color = celltype),
-             size = 0.5,
-             alpha = 0.5) +
-  scale_color_manual(values = pal_gut) +
+  geom_pointdensity(aes(x = rna_CD4,
+                        y = adt_CD4)) +
+  scale_color_viridis_c(trans = "log10") +
   labs(x = "CD4 RNA expression",
        y = "CD4 protein expression") +
   theme_bw() +
-  NoLegend()
+  ggtitle("CD4 RNA vs. ADT Expression")
 ```
 
-There are a few things to notice in this plot:
+We do an extra step here by coloring each cell by its "density", which is a measure of how many other cells are located nearby. This makes it easy to see where most of the cells are on the plot, even when points overlap. The brightest region of the plot is the band of cells at `x = 0`, or where there is 0 RNA expression of _CD4_. At the same time, those cells have a wide range of protein expression (non-zero), which is another confirmation of the **dropout** that is commonly seen with RNA.
 
-- **Most cells have zero *CD4* RNA, even the CD4 T cells.** In every panel, the majority of points sit in a vertical line at `x = 0`. In the CD4 T cells, 92% of cells have no *CD4* transcripts detected, yet these cells still have a wide range of CD4 protein values.
-- **The protein separates the CD4 T cells from the rest.** The CD4 T cell panel has the highest CD4 protein values, followed by the CD14 monocytes, which express low levels of CD4. In most other cell types, half or more of the cells have no CD4 protein counts at all.
-- **Protein is never completely clean.** Every cell type has some cells with low to moderate CD4 protein. This is the non-specific background binding we discussed with the isotype controls, and it is why we look at the relative level of a protein between cell types rather than treating any non-zero value as "positive".
 
-Together, these show why the two modalities complement each other: RNA measures thousands of genes but misses many lowly expressed transcripts, while protein measures far fewer features but detects the ones in the panel more consistently.
+## Key takeaways
 
+- Protein (ADT) counts are normalized with CLR, and isotype controls are excluded because they only measure background.
+- RNA and protein organize cells differently. The ADT panel resolves immune populations well due to the selection of proteins, but non-immune populations rely more on the RNA expression.
+- RNA measures thousands of genes but misses many lowly expressed transcripts, while protein measures far fewer features but detects the ones in the panel more consistently.
 
 ***
 

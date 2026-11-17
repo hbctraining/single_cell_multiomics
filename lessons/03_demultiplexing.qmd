@@ -328,10 +328,10 @@ seurat@meta.data %>%
 |---|---|
 | `HTO_maxID` | The hashtag with the **highest** normalized signal in that cell, whether or not it passed the threshold. |
 | `HTO_secondID` | The hashtag with the **second-highest** signal. Useful for seeing which two donors a doublet came from. |
-| `HTO_margin` | The difference between the top and second hashtag's normalized (CLR) values. Large means one hashtag clearly dominates; small means the cell is ambiguous. |
+| `HTO_margin` | The difference between the top and second hashtag's normalized (CLR) values. Large means one hashtag clearly dominates, small means the cell is ambiguous. |
 | `HTO_classification` | The detailed call. A singlet gets one hashtag name (`hashtag2`), a doublet gets both joined with `_` (`hashtag1_hashtag3`), and a cell with no hashtag above threshold gets `Negative`. |
-| `HTO_classification.global` | The detailed call collapsed into three groups: `Singlet`, `Doublet` or `Negative`. Filter on this one. |
-| `hash.ID` | The final per-cell label: the hashtag name for singlets, and `Doublet` or `Negative` otherwise. `HTODemux` also sets the object's active identities to this. |
+| `HTO_classification.global` | The detailed call collapsed into three groups: `Singlet`, `Doublet` or `Negative`. |
+| `hash.ID` | The final per-cell label. `HTODemux` also sets the object's active identities to this. |
 
 From this, we can count how many cells were assigned to each `hash.ID`:
 
@@ -351,7 +351,7 @@ ggplot(seurat@meta.data) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
-The majority of our remaining cells are identified as `Negative`, meaning that a conclusive label was unable to be determined from the data. These cells are typically empty droplets that contain no cell, but may still contain ambient RNA and a small number of hashtag counts. To evaluate if we truly believe these are low-quality cells to remove, we can assess the `nCount_HTO` to see how many hash counts are present in those cells. If the levels are very low, we will be unable to identify which patient the cell comes from, and therefore remove them.
+Several of the cells are identified as `Negative`, meaning that a conclusive label was unable to be determined from the data. These cells are typically empty droplets that contain no cell, but may still contain ambient RNA and a small number of hashtag counts. To evaluate if we truly believe these are low-quality cells to remove, we can assess the `nCount_HTO` to see how many hash counts are present in those cells. If the levels are very low, we will be unable to identify which patient the cell comes from, and therefore remove them.
 
 ```{r}
 #| label: fig-nCount_HTO_vln
@@ -367,15 +367,7 @@ VlnPlot(seurat,
 
 We can see why the cells that were called `Negative` received that label from the violin plot. These cells had very low levels of hash expression, making it difficult to confidently map them to a label.
 
-We can also check that each hashtag is only high in the cells that were assigned to it. The `RidgePlot()` below has one panel per hashtag. Within each panel, every row is a group of cells with the same `hash.ID`, and the curve shows the distribution of normalized (CLR) values for that hashtag.
-
-How to read the plot:
-
-- **Singlets:** In the panel for `hashtag1`, the cells assigned to `hashtag1` should have a curve shifted far to the right (high values), while the cells assigned to the other hashtags should have curves near zero. The same pattern should hold for each hashtag panel.
-- **Doublets:** Because these cells contain more than one sample, they should have elevated values in more than one hashtag panel.
-- **Negatives:** These cells should sit near zero in every panel, since no hashtag stood out above the background.
-
-If a hashtag is high in cells assigned to a different hashtag, it suggests that the demultiplexing calls may not be reliable.
+We can also check that each hashtag is only high in the cells that were assigned to it. The `RidgePlot()` below has one panel per hashtag. Within each panel, every row is a group of cells with the same `hash.ID`, and the curve shows the distribution of normalized (CLR) values for that hashtag. If a hashtag is high in cells assigned to a different hashtag, it suggests that the demultiplexing calls may not be reliable.
 
 ```{r}
 #| label: fig-hto_ridge

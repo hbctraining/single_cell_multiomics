@@ -10,9 +10,24 @@ library(Seurat)
 # Set seed
 set.seed(123456789L)
 
+# # Create directory tree
+# fs::dir_tree("data/", recurse = 1)
+
 # Load sample metadata
 df_meta <- read_tsv("data/samples.tsv")
 df_meta
+
+# Load libraries and data
+library(tidyverse)
+library(Seurat)
+
+# Set seed
+set.seed(123456789L)
+# Turn off scientific notation
+options(scipen = 999)
+
+# Load sample metadata
+df_meta <- read_tsv("data/samples.tsv")
 
 # Sample of interest
 sample <- "PT1"
@@ -167,6 +182,17 @@ ggplot(seurat_demux@meta.data) +
           size = 3) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+# Load libraries and data
+library(Seurat)
+library(tidyverse)
+library(harmony)
+
+# Set seed
+set.seed(123456789L)
+
+# Load demultiplexed Seurat object
+seurat_demux <- readRDS("data/processed_seurat_objects/seurat_demux.RDS")
 
 # Set default assay to ADT
 DefaultAssay(seurat_demux) <- "ADT"
