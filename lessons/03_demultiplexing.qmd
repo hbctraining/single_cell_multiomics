@@ -1,7 +1,7 @@
 ---
 title: "Loading the Data and Demultiplexing"
 description: |
-  Loads Cell Ranger RNA and antibody capture counts into a Seurat object, separating hashtag oligos (HTO) and antibody-derived tags (ADT) into their own assays. Filters empty droplets, normalizes HTO counts with CLR, and uses HTODemux to assign cells to donors and remove doublets and negatives.
+  Loads Cell Ranger RNA and antibody capture counts into a Seurat object, separating hashtag oligos (HTO) and antibody-derived tags (ADT) into their own assays. Filter out low quality cells (doublets and negatives) to demultiplex pooled cells into individual samples.
 author:
   - Noor Sohail
 date: "2026-10-27"
@@ -49,7 +49,7 @@ In this lesson, we will:
 
 ## Overview of lesson
 
-When doing XYZ...
+When multiple samples are pooled together and tagged with hashtag antibodies, every cell needs ot be traced back to its sample of origin. In this lesson, we run through this demultiplexing workflow for a single sample to see how this process works. This will start from loading the raw counts into Seurat all the way to identifying sample identities with `HTODemux()` and removing doublets and negatives.
 
 ## Loading the dataset into Seurat
 

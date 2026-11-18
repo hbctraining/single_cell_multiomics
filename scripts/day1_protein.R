@@ -1,3 +1,10 @@
+# Install packages
+# # Day 1: Protein (ADT) packages
+# install.packages("tidyverse")
+# install.packages("Seurat")
+# install.packages("harmony")
+# install.packages("ggpointdensity")
+
 # Demultiplexing HTO and protein expression ADT
 # Single-cell multiomics modules
 # Author: Harvard Chan Bioinformatics Core
@@ -6,28 +13,15 @@
 # Load libraries
 library(tidyverse)
 library(Seurat)
+library(harmony)
+library(ggpointdensity)
 
 # Set seed
 set.seed(123456789L)
-
-# # Create directory tree
-# fs::dir_tree("data/", recurse = 1)
 
 # Load sample metadata
 df_meta <- read_tsv("data/samples.tsv")
 df_meta
-
-# Load libraries and data
-library(tidyverse)
-library(Seurat)
-
-# Set seed
-set.seed(123456789L)
-# Turn off scientific notation
-options(scipen = 999)
-
-# Load sample metadata
-df_meta <- read_tsv("data/samples.tsv")
 
 # Sample of interest
 sample <- "PT1"
@@ -171,6 +165,30 @@ seurat_demux@meta.data <- meta
 seurat_demux <- readRDS("data/processed_seurat_objects/seurat_demux.RDS")
 seurat_demux
 
+# Load libraries
+# library(tidyverse)
+# library(Seurat)
+# library(harmony)
+
+### Process RNA
+# DefaultAssay(seurat) <- "RNA"
+# seurat <- NormalizeData(seurat)
+# seurat <- FindVariableFeatures(seurat, nfeatures = 2000)
+# seurat <- ScaleData(seurat)
+# seurat <- RunPCA(seurat, npcs = 50, reduction.name = "pca_rna", verbose = FALSE)
+
+# seurat <- RunHarmony(seurat, group.by.vars = "orig.ident",
+#                      reduction.use = "pca_rna", dims.use = 1:30,
+#                      reduction.save = "harmony_rna", verbose = FALSE)
+# seurat <- RunUMAP(seurat, reduction = "harmony_rna", dims = 1:30,
+#                   reduction.name = "umap_rna", reduction.key = "rnaUMAP_",
+#                   verbose = FALSE, seed.use = 123456789L)
+
+# seurat <- FindNeighbors(seurat, reduction = "harmony_rna", dims = 1:30,
+#                         graph.name = c("nn_rna", "snn_rna"))
+# seurat <- FindClusters(seurat, graph.name = "snn_rna", resolution = 0.8, 
+#                        algorithm = 4, random.seed = 123456789L)
+
 # Number of cells per patient
 ggplot(seurat_demux@meta.data) +
   geom_bar(aes(x = patient,
@@ -182,17 +200,6 @@ ggplot(seurat_demux@meta.data) +
           size = 3) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
-
-# Load libraries and data
-library(Seurat)
-library(tidyverse)
-library(harmony)
-
-# Set seed
-set.seed(123456789L)
-
-# Load demultiplexed Seurat object
-seurat_demux <- readRDS("data/processed_seurat_objects/seurat_demux.RDS")
 
 # Set default assay to ADT
 DefaultAssay(seurat_demux) <- "ADT"
@@ -243,6 +250,11 @@ DimPlot(seurat_demux,
         reduction = "pca_adt",
         shuffle = TRUE)
 
+# Elbow plot of protein PCs
+ElbowPlot(seurat_demux,
+          ndims = 30,
+          reduction = "pca_adt")
+
 # Top proteins for the first 5 PCs
 print(seurat_demux[["pca_adt"]],
       dims = 1:5, nfeatures = 5)
@@ -282,7 +294,7 @@ seurat_demux <- RunUMAP(
   verbose = FALSE,
   seed.use = 123456789L)
 
-# Protein UMAP after integration by library and HIV status
+# Protein UMAP after integration, colored by library and HIV status
 DimPlot(seurat_demux,
         group.by = c("orig.ident", "hiv_status"),
         reduction = "umap_adt",
@@ -301,8 +313,22 @@ seurat_demux <- FindClusters(
   seurat_demux,
   graph.name = "snn_adt",
   resolution = 0.8,
+  algorithm = 4,
   random.seed = 123456789L,
   verbose = FALSE)
+
+# ADT clusters and UMAP
+DimPlot(seurat_demux,
+        group.by = "snn_adt_res.0.8",
+        reduction = "umap_adt",
+        label = TRUE)
+
+# Barplot of proportion of cells in each cluster by orig.ident
+ggplot(seurat_demux@meta.data) +
+    geom_bar(aes(x = snn_adt_res.0.8, fill = orig.ident), 
+             position = position_fill(),
+             color = "black")  +
+    theme_classic()
 
 # RNA clusters on the RNA UMAP
 p_rna <- DimPlot(seurat_demux,
@@ -328,11 +354,22 @@ DimPlot(seurat_demux,
         label = TRUE)
 
 # CD4 and CD8 expression from RNA and protein
+Idents(seurat_demux) <- "snn_rna_res.0.8"
 FeaturePlot(seurat_demux,
-            features = c("rna_CD4", "rna_CD8A", "adt_CD4", "adt_CD8"),
+            features = c("rna_CD4", "rna_CD8A", 
+                         "adt_CD4", "adt_CD8"),
             reduction = "umap_rna",
             order = TRUE,
+            label = TRUE,
             ncol = 2)
+
+# Violin plot of CD4 and CD8 expression in T cell clusters
+VlnPlot(seurat_demux,
+        features = c("rna_CD4", "rna_CD8A", 
+                     "adt_CD4", "adt_CD8"),
+        idents = c(1, 3, 11),
+        ncol = 2,
+        pt.size = 0)
 
 # Marker genes for each cell type
 markers_gut <- list(
@@ -356,9 +393,28 @@ markers_gut <- list(
 DotPlot(seurat_demux, markers_gut,
         group.by = "snn_rna_res.0.8",
         assay = "RNA") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        strip.text.x = element_text(angle = 90, hjust = 0))
 
-# Cluster -> cell type labels
+# Marker proteins for each cell type
+markers_gut_adt <- list(
+  "T cells"           = c("CD3"),
+  "CD4 T"             = c("CD4"),
+  "CD8 T"             = c("CD8"),
+  "B cells"           = c("CD19", "CD20"),
+  "B naive"           = c("IgD"),
+  "B memory / Plasma" = c("CD27", "CD38"),
+  "CD14 monocytes"    = c("CD14", "HLA-DR"),
+  "NK"                = c("CD56"),
+  "Endothelial"       = c("CD31"))
+
+DotPlot(seurat_demux, markers_gut_adt,
+        group.by = "snn_rna_res.0.8",
+        assay = "ADT") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        strip.text.x = element_text(angle = 90, hjust = 0))
+
+# Cluster to cell type labels
 celltype_labels <- list(
   "1"  = "CD4 T",
   "2"  = "Plasma cell - IgA",
@@ -410,13 +466,11 @@ seurat_demux <- RenameIdents(seurat_demux, celltype_labels)
 seurat_demux$celltype <- Idents(seurat_demux)
 seurat_demux$celltype <- factor(seurat_demux$celltype, levels = names(pal_gut))
 
-# Count number of cells
-table(seurat_demux$celltype)
-
 # Cell types on the RNA UMAP
 p1 <- DimPlot(seurat_demux,
         group.by = "celltype",
         reduction = "umap_rna",
+        label = TRUE,
         cols = pal_gut) + 
   NoLegend() +
   ggtitle("UMAP RNA")
@@ -425,27 +479,30 @@ p1 <- DimPlot(seurat_demux,
 p2 <- DimPlot(seurat_demux,
         group.by = "celltype",
         reduction = "umap_adt",
+        label = TRUE,
         cols = pal_gut) +
   ggtitle("UMAP ADT")
 
 p1 | p2
 
+# Count number of cells
+table(seurat_demux$celltype)
+
 # RNA and protein expression of CD4 for each cell
 df_cd4 <- FetchData(seurat_demux,
-                    vars = c("rna_CD4", "adt_CD4", "celltype"))
+                    vars = c("rna_CD4", "adt_CD4", "celltype"),
+                    layer = "data")
 head(df_cd4)
 
+# Subset to CD4+ T cells
 df_cd4 <- subset(df_cd4, celltype == "CD4 T")
 
 # Compare CD4 RNA and protein for CD4+ T cells
 ggplot(df_cd4) +
-  geom_point(aes(x = rna_CD4,
-                 y = adt_CD4,
-                 color = celltype),
-             size = 0.5,
-             alpha = 0.5) +
-  scale_color_manual(values = pal_gut) +
+  geom_pointdensity(aes(x = rna_CD4,
+                        y = adt_CD4)) +
+  scale_color_viridis_c(trans = "log10") +
   labs(x = "CD4 RNA expression",
        y = "CD4 protein expression") +
   theme_bw() +
-  NoLegend()
+  ggtitle("CD4 RNA vs. ADT Expression")

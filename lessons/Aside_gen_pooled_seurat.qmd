@@ -45,7 +45,7 @@ In this lesson, we will:
 
 ## Overview of lesson
 
-When doing XYZ...
+In this lesson, we through each of the steps that were used in order to concatenate each sample into a singular Seurat object. In the process, pooled samples were demultiplexed. Lastly, the combined Seurat object was then taken through a standard scRNA-seq workflow through to clustering.
 
 ## Create Seurat object
 

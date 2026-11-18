@@ -136,6 +136,7 @@ Loading your libraries at the top of the script will also allow you to easily ke
 # Load libraries
 library(tidyverse)
 library(Seurat)
+library(harmony)
 library(ggpointdensity)
 
 # Set seed

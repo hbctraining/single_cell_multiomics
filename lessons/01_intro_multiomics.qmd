@@ -1,7 +1,7 @@
 ---
 title: "Single-cell Multiomics"
 description: |
-  Introduction to concept and protocols for single-cell multiomics spanning RNA, chromatin accessibility (ATAC), and surface protein expression from the same cell. We compare the strengths and limitation of each modality to identify which method would best answer your research question.
+  Introduction to the concepts and protocols for single-cell multiomics spanning RNA, chromatin accessibility (ATAC), and surface protein expression from the same cell. We compare the strengths and limitations of each modality to identify which method would best answer your research question.
 author:
   - Noor Sohail
   - Mandovi Chatterjee
@@ -42,20 +42,20 @@ In this lesson, we will:
 
 ## Overview of lesson
 
-Before designing an experiment and collecting samples, it is important to determine which assays will be most beneficial to answering your biological question. Here, we introduce the concept of single-cell multiomics which allows you to capture multiple pieces of information (RNA, ATAC, protein expression) within a singular cell. Each modality comes with its own advantages and disadvantages that will determine which analyses you can perform with your data.
+Before designing an experiment and collecting samples, it is important to determine which assays will be most beneficial to answering your biological question. Here, we introduce the concept of single-cell multiomics, which allows you to capture multiple pieces of information (RNA, ATAC, protein expression) from a single cell. Each modality comes with its own advantages and disadvantages that will determine which analyses you can perform with your data.
 
 ## What is single-cell multiomics?
 
-The field of single-cell sequencing has evolved beyond its intial focus on gene expression (RNA) capture. Additional methods have been developed to capture additional information for **each cell**, including the epigenome (chromatin accessibility), proteome, and more. Experiments that contain more than one modality is what is typically referred to as a multiomics experiment.
+The field of single-cell sequencing has evolved beyond its initial focus on gene expression (RNA) capture. New methods have been developed to capture additional information for **each cell**, including the epigenome (chromatin accessibility), proteome, and more. Experiments that measure more than one modality are typically referred to as multiomics experiments.
 
-::: {#fig-asap_seq .figure}
+::: {#fig-dogma_seq .figure}
 ![](../img/01_dogma_seq.png){width=900}
 
-Schematic how the DOGMA-seq protocol captures single-cell RNA, ATAC, and protein expression.<br>
+Schematic of how the DOGMA-seq protocol captures single-cell RNA, ATAC, and protein expression.<br>
 _Image source: [Mimitou et al. (2021)](https://www.nature.com/articles/s41587-021-00927-2)_
 ::: 
 
-Two of the most popular protocols that captures all three RNA, ATAC, and protein are [ASAP-seq](https://www.nature.com/articles/s41587-021-00927-2) and [TEA-seq](https://elifesciences.org/articles/63632). This then begs the question, when is it appropriate to use which modality? [Kim et. al (2024)](https://www.sciencedirect.com/science/chapter/bookseries/pii/S1937644824001187) summarized the main principles and use cases for each modality. Here, we summarize the key points to serve as a reference for which modality best suits the experimental question or design that you may be using.
+Two of the most popular protocols that capture all three modalities (RNA, ATAC, and protein) are [ASAP-seq](https://www.nature.com/articles/s41587-021-00927-2) and [TEA-seq](https://elifesciences.org/articles/63632). This raises the question: when is it appropriate to use each modality? [Kim et al. (2024)](https://www.sciencedirect.com/science/chapter/bookseries/pii/S1937644824001187) summarized the main principles and use cases for each modality. Here, we summarize the key points to serve as a reference for which modality best suits the experimental question or design that you may be using.
 
 Table: Summary of common single-cell modalities. {#tbl-modality_contrast}
 
@@ -63,50 +63,11 @@ Table: Summary of common single-cell modalities. {#tbl-modality_contrast}
 |---|---|---|---|
 | **Coverage** | RNA abundance and splicing events | DNA chromatin accessibility and epigenetic regulation | Surface protein expression |
 | **Advantages** | • Method of choice for transcriptional heterogeneity<br>• Captures cell-to-cell expression variability | • Short sample prep time and works with few cells<br>• Accessible and cost-effective | • Protein expression is _not_ sparse<br>• Insight into cell communication and signaling<br>• Paired with RNA, better resolves cellular heterogeneity |
-| **Limitations** | • Low capture efficiency and high dropout making data noisy, sparse, and variable<br>• Incomplete genome coverage, especially in rare cell populations | • Non-specific antibody binding (background counts)<br>• Composition bias from uneven capture efficiency | • Requires known antibodies (challening for non-model) |
-| **Applications** | • Cell type identification<br>• Cell subpopulation discovery<br>• Gene expression dynamics<br>• Cellular heterogeneity | • *Cis*/*trans* regulatory element analysis<br>• Gene regulatory dynamics<br>• Transcription factor activity<br>• Epigenetic changes<br>• Motif analsis<br> | • Gene–protein correlation<br>• Cell signaling pathways<br>• Cell states and cell types |
+| **Limitations** | • Low capture efficiency and high dropout, making data noisy, sparse, and variable<br>• Incomplete genome coverage, especially in rare cell populations | • Composition bias from uneven capture efficiency | • Requires known antibodies (challenging for non-model organisms)<br>• Non-specific antibody binding (background counts) |
+| **Applications** | • Cell type identification<br>• Cell subpopulation discovery<br>• Gene expression dynamics<br>• Cellular heterogeneity | • *Cis*/*trans* regulatory element analysis<br>• Gene regulatory dynamics<br>• Transcription factor activity<br>• Epigenetic changes<br>• Motif analysis | • Gene–protein correlation<br>• Cell signaling pathways<br>• Cell states and cell types |
 
 
 ## How modalities are captured
-
-<!-- TODO: talk to mandovi
-
-- People usually use kit from 10x for either (RNA + protein) or (RNA + ATAC)
-- ATAC + RNA
-    - Must work with single nuclei 
-      - have to make sure nuclei is intact
-      - removing debris
-      - you can do sorting, but you have practice because it adds more time and can put a lot of pressure on nuclei (it might pop)
-    - So surface protein is out the question (removing cell membrane)
-    - No mito
-    - If there is a protein inside the nuclear membrane, it is _possible_ to do the protein expression as well (but in Mandovi's experience it does not work as well as cell surface when you hash them)
-    - Because nuclei, RNA can leak out if the nuclei are frozen. Combining nuclear protein staining with RNA and protein can be challenging
-      - protein stainig takes a while (~1 hour) which can cause RNA to degrade in the meantime
-    - Annotation + clustering is done usually on RNA so it's important to make sure that RNA quality is good (recommend RNAase inhibitor)
-      - The size of the barcode bead is finite, so it gets 50% RNA and 50% ATAC instead of 100% of material
-    
-- Mandovi recommends doing (RNA + ATAC) and then doing (RNA + protein) separately
-
-- RNA + ADT (CITE)
-  - Viability is important (checking quailty of cells)
-  - You don't have to do cell suface protein, there are other panels now (i.e cytosolic )
-  - It is important to optimize the concentration of antibodies in use
-    - Add isotype controls (negative control)
-    - Similar logic to flow
-  - If you do CD45 then it is tricky to do hashing at the same time
-    - Hashing antibodies are a combination of CD45 and MHC1 (?) so they can compete
-  
-- For both sample prep there is a significant loss of cells during sample prep
-  - Not any sample will qualify for these experiments
-  - Because you either incubate or lyse cells, then during washing (after lysing or to remove unbound anitbodies) which can lose a lot of cells
-  - So if you have limited concentration of sample
-
-- When picking experiment
-  - Fewer UMIs for multiome as compared to scRNA-seq
-  - There are a group of people who believe data for multiome is better when you do 1/2 for RNA and 1/2 for ATAC (sequenced separately) _of the same sample_
-    - Nuclei are not the same (tradeoff)
-    - This will improve levels of ATAC and RNA expression
--->
 
 In practice, most multiomic experiments are run with commercial kits from 10x Genomics, which pair RNA with one other modality: either chromatin accessibility ([10x Genomics Multiome ATAC + Gene Expression](https://www.10xgenomics.com/support/epi-multiome/documentation/steps/sample-prep/nuclei-isolation-for-single-cell-multiome-atac-plus-gene-expression-sequencing)) or protein expression with CITE-seq ([Stoeckius et al. (2017)](https://www.nature.com/articles/nmeth.4380)). The two pairings call for very different sample preparation, and each comes with its own trade-offs.
 
@@ -123,15 +84,15 @@ _Image source: [Genewiz](https://www.genewiz.com/en-gb/public/services/next-gene
 
 The quality of the nuclei preparation largely decides the quality of the data. Key challenges when working with nuclei include:
 
-- **Keeping nuclei intact:** Nuclei are fragile. Sorting can clean up the suspension, but it adds time and mechanical stress that can rupture nuclei.
+- **Keeping nuclei intact:** Nuclei are fragile and preparation can be challenging. One needs to be gentle throughout the protocol, and the cold chain must be maintained at all times. Nuclei extraction often leads to a lot of debris in the sample, which can be removed either by filtering or by using a density gradient/cushion. Fluorescence-activated nuclei sorting (FANS) can also be done to get a clean prep, but sorting adds time to the protocol and mechanical stress can rupture the nuclei.
 - **Removing debris:** Debris from lysed cells can clog the microfluidics and add background ambient RNA ([10x Genomics nuclei isolation protocol](https://www.protocols.io/view/mouse-heart-nuclei-isolation-for-10x-genomics-sing-j5pwcq5pf.pdf)).
-- **Protecting RNA:** Nuclear RNA readily leaks out, especially from frozen samples. Because cell type annotation and clustering are usually done on the RNA modality, adding an RNase inhibitor to the lysis and wash buffers is recommended ([Gladstone nuclei isolation protocol](https://www.protocols.io/view/isolation-of-nuclei-from-frozen-tissue-for-snmulti-6uchesw.html)).
+- **Protecting RNA:** Nuclear RNA readily leaks out. Because cell type annotation and clustering are usually done on the RNA modality, adding an RNase inhibitor to the lysis and wash buffers is recommended ([Gladstone nuclei isolation protocol](https://www.protocols.io/view/isolation-of-nuclei-from-frozen-tissue-for-snmulti-6uchesw.html)).
 
 Working with nuclei instead of whole cells also changes what you can measure, compared with standard scRNA-seq:
 
 - **No surface protein:** The cell membrane is removed, so surface proteins can no longer be measured.
-- **Limited intranuclear protein:** Proteins inside the nucleus can be measured. However, intranuclear staining does not perform as well as surface staining. The ~hour-long antibody incubation time gives RNA more time to degrade.
-- **No mitochondrial reads:** Mitochondrial transcripts are largely absent, due to removal of the cytoplasm. Therefore, using mitochondria to identify stressed/dying cells is not possible ([Bakken et al. (2018)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0209648)).
+- **Limited intranuclear protein:** Proteins inside the nucleus can be measured. However, intranuclear staining does not perform as well as surface staining. The ~1-hour antibody incubation time gives RNA more time to degrade.
+- **No mitochondrial reads:** Mitochondrial transcripts are largely absent due to removal of the cytoplasm. Therefore, using mitochondrial reads to identify stressed/dying cells is not possible ([Bakken et al. (2018)](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0209648)).
 - **Fewer UMIs per cell:** Nuclei hold less RNA than whole cells, so fewer genes are detected per nucleus (@fig-cell_vs_nuclei), and each nucleus contributes material to two libraries rather than one. 10x Genomics reports comparable sensitivity after downsampling, but this comparison is against single-nucleus input ([10x Genomics technical note](https://cdn.10xgenomics.com/image/upload/v1660261286/support-documents/CG000372_TechNote_Multiome_ATAC_GEX_DataComparison_RevA.pdf)).
 
 
@@ -149,7 +110,7 @@ CITE-seq uses oligo-tagged antibodies to measure protein alongside RNA in whole 
 ::: {#fig-cite_seq .figure}
 ![](../img/01_cite_seq.png){width=900}
 
-Design of a CITE-seq antibody. Each antibody is conjugated to an oligo containing a PCR handle, an antibody-specific barcode, and a poly-A tail, so it is captured on the same beads as mRNA.<br>
+Design of an example CITE-seq antibody, where each antibody is conjugated to an oligo containing a PCR handle, an antibody-specific barcode, and a poly-A tail, so it is captured on the same beads as mRNA.<br>
 _Image source: [Stoeckius et al. (2017)](https://www.nature.com/articles/nmeth.4380)_
 ::: 
 
@@ -174,7 +135,7 @@ Hashtag antibodies work by binding to proteins found on almost every cell ([BioL
 - **Human samples:** CD298 and β2-microglobulin
 - **Mouse samples:** CD45 and MHC class I
 
-This matters for **mouse** experiments. If your protein panel also includes an CD45 antibody, the panel antibody and the hashtag antibody will try to bind the same protein and block each other. As a result, both the CD45 protein measurement and the sample assignment can be unreliable.
+This matters for **mouse** experiments. If your protein panel also includes a CD45 antibody, the panel antibody and the hashtag antibody will try to bind the same protein and block each other. As a result, both the CD45 protein measurement and the sample assignment can be unreliable.
 
 ## Choosing an experiment
 
@@ -191,7 +152,7 @@ Table: Practical considerations when choosing a multiomics experiment. {#tbl-exp
 ::: callout-important
 # Experimental design help
 
-For more detailed questions regarding experimental design, we would encourage you to reach out to our consulting team at the [Harvard Chan Bioinformatics Core](https://hsph.harvard.edu/research/bioinformatics/) for guidance. For technical questions regarding sample preparation and protocols, the [Single-cell Core at HMS](https://singlecellcore.hms.harvard.edu/) is another fantastic resource to get help.
+For more detailed questions regarding experimental design, we encourage you to reach out to our consulting team at the [Harvard Chan Bioinformatics Core](https://hsph.harvard.edu/research/bioinformatics/) for guidance. For technical questions regarding sample preparation and protocols, the [Single-cell Core at HMS](https://singlecellcore.hms.harvard.edu/) is another fantastic resource to get help.
 
 :::
 
@@ -223,22 +184,22 @@ _Image source: [10x Genomics](https://www.10xgenomics.com/support/software/cell-
 
 ### RNA + ATAC + protein
 
-Protocols that capture all three modalities, such as the DOGMA-seq dataset (used in this workshop), do not fit neatly into either pipeline. Instead, the data is run through **both**: Cell Ranger ARC processes the RNA + ATAC libraries, and Cell Ranger multi processes the RNA + ADT libraries (including the hashtags). The cells called by Cell Ranger ARC are then used to keep the same set of cell barcodes across all three modalities.
+Protocols that capture all three modalities, such as the DOGMA-seq dataset, do not fit neatly into either pipeline. Instead, the data is run through **both**: Cell Ranger ARC processes the RNA + ATAC libraries, and Cell Ranger multi processes the RNA + ADT libraries (including the hashtags). The cells called by Cell Ranger ARC are then used to keep the same set of cell barcodes across all three modalities.
 
 This will be the case for the dataset used throughout this workshop.
 
 ## Downstream analyses
 
-Each of the modalities alone allow a variety of different downstream analyses according to the information that is represented in the modality.
+Each modality on its own allows a variety of downstream analyses, depending on the information it captures.
 
 ::: {#fig-multiomics_analyses .figure}
 ![](../img/01_multiomics_modalities_overview.png){width=900}
 
-Different bioinformatics analyses that can be computed on each different modality.<br>
+Different bioinformatics analyses that can be computed on each modality.<br>
 _Image source: Adapted from [Heumos et al. (2023)](https://www.nature.com/articles/s41576-023-00586-w)_
 :::
 
-Each of the modalities can be analyzed alone to produce results. However, there are a variety of different methods that allow you to combine the results from different modalities to produce more comprehensive and accurate results. For example, one of the most common techniques is weighted nearest neighbors which is able to consider the contribution of each modality to the overall profile of a cell during clustering. We will learn how to run weighted nearest neighbors in the lesson on scATAC-seq.
+Each of the modalities can be analyzed alone to produce results. However, there are a variety of methods that allow you to combine the results from different modalities to produce more comprehensive and accurate results. For example, one of the most common techniques is weighted nearest neighbors (WNN), which considers the contribution of each modality to the overall profile of a cell during clustering. We will learn how to run weighted nearest neighbors in the lesson on scATAC-seq.
 
 
 ***

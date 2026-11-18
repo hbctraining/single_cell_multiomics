@@ -199,7 +199,7 @@ ElbowPlot(seurat_demux,
           reduction = "pca_adt")
 ```
 
-The curve drops steeply over the first few PCs and flattens out between PCs 12 and 15. Using 20 PCs keeps everything up to the elbow with a small margin, without adding PCs that mostly capture noise.
+The curve drops steeply over the first few PCs and flattens out. Using 20 PCs keeps everything up to the elbow with a small margin, without adding PCs that mostly capture noise.
 :::
 
 #### PCA weights
@@ -694,9 +694,7 @@ We do an extra step here by coloring each cell by its "density", which is a meas
 
 ## Key takeaways
 
-- Protein (ADT) counts are normalized with CLR, and isotype controls are excluded because they only measure background.
-- RNA and protein organize cells differently. The ADT panel resolves immune populations well due to the selection of proteins, but non-immune populations rely more on the RNA expression.
-- RNA measures thousands of genes but misses many lowly expressed transcripts, while protein measures far fewer features but detects the ones in the panel more consistently.
+RNA expression is crucial component when it comes to identifying cell types due to the thousands of genes it captures. The protein panel is limited to few proteins, despite the more consistent expression across the cells. Careful selection of protein antibodies, beyond immune proteins for non-immune datases, will result in more structure of the ADT dataset.
 
 ***
 
