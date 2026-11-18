@@ -17,7 +17,7 @@ toc: false
 
 ## Day 2: ATAC-seq
 
-## Day 3: Join Analyses
+## Day 3: Joint Analyses
 
 
 ***
